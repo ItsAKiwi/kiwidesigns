@@ -32,6 +32,51 @@
   <link rel="stylesheet" href="css/styles.css" />
 
   <style>
+    /* ---- Section 02: Altar animations ---- */
+    @keyframes thread-pulse {
+      0%, 100% { opacity: 0.25; filter: blur(1px); }
+      50%       { opacity: 0.65; filter: blur(0.5px); }
+    }
+    @keyframes spirit-dot-pulse {
+      0%, 100% { opacity: 0.3; box-shadow: 0 0 4px 1px rgba(63,177,255,0.3); }
+      50%       { opacity: 0.9; box-shadow: 0 0 8px 3px rgba(63,177,255,0.7); }
+    }
+    .spirit-thread {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      transform: translateX(-50%);
+      background: linear-gradient(to bottom, transparent 0%, #3FB1FF 35%, #3FB1FF 65%, transparent 100%);
+      animation: thread-pulse 4s ease-in-out infinite;
+      pointer-events: none;
+    }
+    .spirit-dot {
+      display: inline-block;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: #3FB1FF;
+      box-shadow: 0 0 6px 2px rgba(63,177,255,0.5);
+      animation: spirit-dot-pulse 2.5s ease-in-out infinite;
+      vertical-align: middle;
+      flex-shrink: 0;
+    }
+    /* Notched-corner seal */
+    .seal {
+      display: inline-block;
+      padding: 0.45rem 0.9rem;
+      border: 1px solid rgba(255,255,255,0.12);
+      clip-path: polygon(7px 0%,100% 0%,100% calc(100% - 7px),calc(100% - 7px) 100%,0% 100%,0% 7px);
+      font-size: 10px;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: rgb(148,163,184);
+      line-height: 1.7;
+      white-space: nowrap;
+    }
+
     /* ---- Case study layout ---- */
     .cs-num {
       font-size: 0.62rem;
@@ -81,7 +126,7 @@
     }
     .pivot-callout p {
       font-family: 'Noto Serif SC', serif;
-      font-size: 1.0rem;
+      font-size: 1.125rem;
       font-weight: 300;
       line-height: 2.0;
       color: rgba(255, 255, 255, 0.68);
@@ -267,76 +312,203 @@
       border-radius: 12px;
       padding: 1.5rem 2rem;
     }
+
+    /* ---- Scroll nav ---- */
+    #scroll-nav {
+      position: fixed;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 40;
+      width: 9vw;
+      min-width: 80px;
+      max-width: 110px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 1.5rem 0 1.5rem 0.75rem;
+      opacity: 0.5;
+      transition: opacity 0.4s ease;
+      /* Scroll spine — left edge */
+      border-left: 1px solid rgba(232,184,42,0.12);
+    }
+    #scroll-nav::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -1px;
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: rgba(232,184,42,0.25);
+      transform: translateX(-50%);
+    }
+    #scroll-nav::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: -1px;
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: rgba(232,184,42,0.25);
+      transform: translateX(-50%);
+    }
+    #scroll-nav:hover {
+      opacity: 1;
+    }
+    /* All labels go solid gold on nav hover */
+    #scroll-nav:hover .snav-label {
+      color: #E8B82A;
+    }
+    #scroll-nav:hover .snav-num {
+      color: rgba(232,184,42,0.65);
+    }
+    .snav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.1rem;
+      padding: 0.35rem 0;
+      text-decoration: none;
+      cursor: pointer;
+      position: relative;
+      width: 100%;
+    }
+    .snav-num {
+      font-size: 8px;
+      letter-spacing: 0.18em;
+      color: rgba(232,184,42,0.4);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      transition: color 0.3s;
+      text-align: left;
+    }
+    .snav-label {
+      font-size: 9px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(232,184,42,0.75);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      text-align: left;
+      position: relative;
+      overflow: hidden;
+      transition: color 0.3s;
+    }
+    /* Shiny sweep — only on the hovered item, not all labels */
+    .snav-label::after {
+      content: attr(data-text);
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      background: linear-gradient(90deg, transparent 0%, transparent 20%, rgba(255,255,255,0.9) 50%, transparent 80%, transparent 100%);
+      background-size: 300% auto;
+      background-position: 200% center;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      opacity: 0;
+      pointer-events: none;
+    }
+    #scroll-nav:hover .snav-item.shiny-active .snav-label::after {
+      opacity: 1;
+      animation: shinySlide 1.5s ease forwards;
+    }
+    #scroll-nav:hover .snav-item.shiny-done .snav-label::after {
+      opacity: 1;
+      background-position: -100% center; /* hold end state, no re-animation */
+    }
+    @keyframes shinySlide {
+      0%   { background-position: 200% center; }
+      100% { background-position: -100% center; }
+    }
+    .snav-item.active .snav-label { color: #E8B82A; }
+    .snav-item.active .snav-num   { color: rgba(232,184,42,0.65); }
+    /* Active tick on left spine */
+    .snav-item.active::before {
+      content: '';
+      position: absolute;
+      left: -0.75rem;
+      top: 50%; transform: translateY(-50%);
+      width: 3px; height: 14px;
+      background: #E8B82A;
+      border-radius: 2px;
+      box-shadow: 0 0 6px rgba(232,184,42,0.6);
+    }
+    /* Divider between items */
+    .snav-divider {
+      width: 60%;
+      height: 1px;
+      background: rgba(232,184,42,0.07);
+      align-self: flex-start;
+      margin: 0.1rem 0;
+    }
   </style>
 </head>
 <body style="background:#0A0C10;color:#fff;">
 
-  <!-- Mountain background -->
-  <img src="images/Mountain-Silhouette_V.png" alt="" aria-hidden="true" class="mountain-bg" />
-
   <!-- ============================================================
-       NAVIGATION
+       HEADER + HERO WRAPPER
        ============================================================ -->
-  <nav id="nav" class="fixed top-0 left-0 right-0 z-50 transition-all duration-700" style="padding-top:2rem;padding-bottom:2rem;">
-    <div class="grid grid-cols-12 px-6">
-      <div class="col-start-3 col-span-8 flex items-center justify-between">
-        <a href="index.html" class="back-link">
-          <span class="arr">&#8592;</span>Portfolio
-        </a>
-        <div class="flex items-center gap-10">
-          <a href="index.html#about" class="nav-link">About</a>
-          <a href="index.html#work"  class="nav-link">Work</a>
+  <div style="background:#06080c;position:relative;z-index:1;">
+
+    <nav id="nav" class="fixed top-0 left-0 right-0 z-50 transition-all duration-700" style="padding-top:2rem;padding-bottom:2rem;">
+      <div class="grid grid-cols-12 px-6">
+        <div class="col-start-3 col-span-8 flex items-center justify-between">
+          <a href="index.html" class="back-link">
+            <span class="arr">&#8592;</span>Portfolio
+          </a>
+          <div class="flex items-center gap-10">
+            <a href="index.html#about" class="nav-link">About</a>
+            <a href="index.html#work"  class="nav-link">Work</a>
+          </div>
         </div>
       </div>
-    </div>
-  </nav>
+    </nav>
 
-  <!-- ============================================================
-       HERO
-       ============================================================ -->
-  <section class="relative min-h-screen pt-28 pb-24" style="z-index:1;">
-    <img src="images/Clouds.png" alt="" aria-hidden="true" class="clouds-deco" style="opacity:0.28;" />
+    <section class="relative" style="overflow:hidden;padding:0 !important;">
 
-    <div class="grid grid-cols-12 px-6" style="position:relative;z-index:1;">
+      <div style="display:flex;align-items:stretch;padding-top:5rem;">
 
-      <div class="col-span-2 flex items-start justify-center" style="padding-top:9rem;">
-        <span class="vertical-text" style="color:rgba(255,255,255,0.05);letter-spacing:0.7em;font-size:0.8rem;">留白</span>
-      </div>
+        <!-- Left: text — vertically centered within screenshot height -->
+        <div style="flex:0 0 45%;display:flex;flex-direction:column;justify-content:center;padding-left:calc(100%/12 + 1.5rem);padding-right:2rem;position:relative;z-index:2;">
+          <div class="mist-reveal" style="transition-delay:60ms;">
+            <p class="eyebrow mb-5">Case Study &thinsp;·&thinsp; Newegg &thinsp;·&thinsp; 2025</p>
+          </div>
 
-      <div class="col-span-8">
-        <div class="mist-reveal" style="transition-delay:60ms;">
-          <p class="eyebrow mb-5">Case Study &thinsp;·&thinsp; Newegg &thinsp;·&thinsp; 2025</p>
+          <div class="mist-reveal" style="transition-delay:160ms;">
+            <h1 class="font-bold" style="font-size:clamp(2.4rem,5.5vw,5rem);letter-spacing:-0.055em;line-height:0.93;margin-bottom:2.25rem;color:#ffffff;">
+              Gamer Community
+              <br />
+              <span style="color:rgba(255,255,255,0.26);font-size:0.52em;letter-spacing:-0.02em;line-height:1.35;display:block;margin-top:0.1em;font-weight:700;">
+                Architecting a Collaborative Ecosystem
+              </span>
+            </h1>
+          </div>
+
+          <div class="mist-reveal" style="transition-delay:280ms;">
+            <p class="text-slate-400" style="line-height:1.5;font-size:1.125rem;">
+              Transforming a "Transactional Vending Machine" into a High-Retention Social Destination.
+            </p>
+          </div>
         </div>
 
-        <!-- Full title: "Gamer Community" bright, rest dim — mirrors index.html hero style -->
-        <div class="mist-reveal" style="transition-delay:160ms;">
-          <h1 class="font-bold" style="font-size:clamp(3rem,7vw,6.25rem);letter-spacing:-0.055em;line-height:0.93;margin-bottom:2.25rem;color:#ffffff;">
-            Gamer Community
-            <br />
-            <span style="color:rgba(255,255,255,0.26);font-size:0.52em;letter-spacing:-0.02em;line-height:1.35;display:block;margin-top:0.1em;font-weight:700;">
-              Architecting a Collaborative Ecosystem
-            </span>
-          </h1>
+        <!-- Right: screenshot — drives section height, fills flush -->
+        <div style="flex:1;display:flex;overflow:hidden;">
+          <div class="mist-reveal" style="width:100%;transition-delay:200ms;">
+            <img src="images/GC-header-frame2.png" alt="Gamer Community interface mockup"
+                 style="width:100%;height:100%;object-fit:cover;object-position:left center;display:block;" />
+          </div>
         </div>
 
-        <div class="mist-reveal" style="transition-delay:280ms;">
-          <p class="text-slate-400 mb-14" style="line-height:1;font-size:1.05rem;">
-            Transforming a "Transactional Vending Machine" into a High-Retention Social Destination.
-          </p>
-        </div>
       </div>
+    </section>
 
-      <div class="col-span-2 flex items-center justify-center">
-        <span class="vertical-text-latin" style="color:rgba(255,255,255,0.04);letter-spacing:0.28em;font-size:0.52rem;">Case Study</span>
-      </div>
-
-    </div>
-  </section>
+  </div>
 
   <!-- ============================================================
        01 — PROJECT CONTEXT: THE RETENTION LEAK
        ============================================================ -->
-  <section class="py-24" style="position:relative;z-index:1;">
+  <section id="sec-01" class="py-24" style="position:relative;z-index:1;">
     <div class="grid grid-cols-12 px-6">
       <div class="col-start-3 col-span-8">
 
@@ -351,21 +523,21 @@
         <div class="mist-reveal mb-8" style="transition-delay:100ms;">
           <div class="glass-card rounded-2xl p-8 relative overflow-hidden">
             <div class="cloud-hover-effect" aria-hidden="true"></div>
-            <p style="font-size:0.95rem;color:rgba(255,255,255,0.54);line-height:1.9;margin-bottom:1.5rem;">
+            <p style="font-size:1.125rem;color:rgba(255,255,255,0.54);line-height:1.9;margin-bottom:1.5rem;">
               Newegg is the go-to destination for high-performance components, yet it struggled with customer retention post-purchase. Users viewed the platform as a <strong style="color:rgba(255,255,255,0.76);font-weight:500;">transactional pass-through</strong> — once the parts arrived, the relationship ended.
             </p>
-            <p style="font-size:0.95rem;color:rgba(255,255,255,0.7);line-height:1.9;">
+            <p style="font-size:1.125rem;color:rgba(255,255,255,0.7);line-height:1.9;">
               My mission was to complete the Newegg ecosystem by extending the user journey from <strong style="color:rgba(255,255,255,0.84);font-weight:500;">'Buying and Building' to 'Showcasing and Competing.'</strong>
             </p>
           </div>
         </div>
 
         <div class="mist-reveal" style="transition-delay:200ms;">
-          <div class="about-quote">
+          <p style="font-size:1.125rem;color:rgba(255,255,255,0.52);line-height:1.9;">
             "I approached this as both a designer and a World Builder. I applied the principle of
             <span class="font-noto" style="color:#E8B82A;"> 留白</span>
             — the intentional void — to ensure that amidst high-density technical specs, the interface provided the 'breathing room' for a community to thrive."
-          </div>
+          </p>
         </div>
 
       </div>
@@ -373,53 +545,73 @@
   </section>
 
   <!-- ============================================================
-       02 — PROJECT OVERVIEW
+       02 — PROJECT OVERVIEW: THE VERTICAL ALTAR
        ============================================================ -->
-  <section class="py-20" style="position:relative;z-index:1;">
-    <div class="grid grid-cols-12 px-6">
-      <div class="col-start-3 col-span-8">
+  <section id="sec-02" style="background:#050608;position:relative;z-index:1;padding:0 !important;overflow:hidden;">
 
-        <div class="mist-reveal mb-10">
-          <div class="flex items-center gap-4 mb-5">
-            <span class="cs-num">02</span>
-            <div class="cs-rule"></div>
-          </div>
-          <h2 class="cs-h2">Project Overview</h2>
-        </div>
+    <!-- Film grain SVG filter -->
+    <svg style="display:none;" aria-hidden="true">
+      <filter id="grain-filter">
+        <feTurbulence type="fractalNoise" baseFrequency="0.72" numOctaves="4" stitchTiles="stitch"/>
+        <feColorMatrix type="saturate" values="0"/>
+      </filter>
+    </svg>
+    <div aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%;filter:url(#grain-filter);opacity:0.08;pointer-events:none;z-index:0;"></div>
 
-        <div class="mist-reveal grid grid-cols-3 gap-5" style="transition-delay:80ms;">
+    <!-- Radial center mist glow -->
+    <div aria-hidden="true" style="position:absolute;inset:0;background:radial-gradient(ellipse 50% 70% at 50% 50%,rgba(63,177,255,0.05) 0%,transparent 70%);pointer-events:none;z-index:0;"></div>
 
-          <div style="background:rgba(255,255,255,0.018);border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:1.75rem;">
-            <div class="cs-num" style="margin-bottom:0.85rem;">My Role</div>
-            <p style="font-size:0.9375rem;font-weight:600;color:rgba(255,255,255,0.82);letter-spacing:-0.01em;line-height:1.5;">
-              UI/UX Designer &amp;<br/>Strategic Product Architect
-            </p>
-          </div>
+    <!-- 留白 ghost — far left, vertical, massive -->
+    <div aria-hidden="true" class="font-noto" style="position:absolute;left:3vw;top:50%;transform:translateY(-50%);writing-mode:vertical-rl;text-orientation:mixed;font-size:25vh;color:#fff;opacity:0.02;user-select:none;pointer-events:none;font-weight:700;line-height:1;z-index:0;">留白</div>
 
-          <div style="background:rgba(255,255,255,0.018);border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:1.75rem;">
-            <div class="cs-num" style="margin-bottom:0.85rem;">The Mission</div>
-            <p style="font-size:0.9375rem;color:rgba(255,255,255,0.52);line-height:1.72;">
-              Re-engineer the "PC Build Showcase" from a static gallery into a <span style="color:rgba(255,255,255,0.72);">high-engagement social engine.</span>
-            </p>
-          </div>
+    <!-- Spirit thread — center vertical line -->
+    <div aria-hidden="true" class="spirit-thread" style="z-index:0;"></div>
 
-          <div style="background:rgba(255,255,255,0.018);border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:1.75rem;">
-            <div class="cs-num" style="margin-bottom:0.85rem;">Methodology</div>
-            <div class="goal-li" style="margin-bottom:0.55rem;"><div class="goal-dot"></div><span>User Research</span></div>
-            <div class="goal-li" style="margin-bottom:0.55rem;"><div class="goal-dot"></div><span>Competitive Analysis</span></div>
-            <div class="goal-li" style="margin-bottom:0;"><div class="goal-dot"></div><span>Strategic Visual Intervention</span></div>
-          </div>
+    <!-- Content: single centered column -->
+    <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center;padding:5.5rem 2rem 5rem;gap:2.25rem;">
 
-        </div>
-
+      <!-- Role seal -->
+      <div class="mist-reveal" style="transition-delay:0ms;">
+        <div class="seal">UI/UX &amp; Product Designer</div>
       </div>
+
+      <!-- Core mission -->
+      <div class="mist-reveal" style="transition-delay:120ms;max-width:640px;">
+        <p class="font-noto" style="font-size:clamp(1.5rem,3vw,2.4rem);line-height:1.35;color:rgba(255,255,255,0.92);font-weight:300;text-shadow:0 0 60px rgba(255,255,255,0.08),0 0 120px rgba(255,255,255,0.04);">
+          Extending the User Journey from Buying and Building to Showcasing and Competing.
+        </p>
+      </div>
+
+      <!-- Business problem -->
+      <div class="mist-reveal" style="transition-delay:210ms;">
+        <p style="font-size:1.0rem;color:rgb(100,116,139);font-style:italic;line-height:1.6;">
+          Solving the critical business challenge of post-purchase customer retention.
+        </p>
+      </div>
+
+      <!-- Methodology row with spirit dot separators -->
+      <div class="mist-reveal" style="transition-delay:300ms;display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap;justify-content:center;">
+        <span style="font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:rgba(255,255,255,0.42);">Behavioral Mapping</span>
+        <span class="spirit-dot"></span>
+        <span style="font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:rgba(255,255,255,0.42);">Competitive Benchmarking</span>
+        <span class="spirit-dot" style="animation-delay:1.25s;"></span>
+        <span style="font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:rgba(255,255,255,0.42);display:flex;align-items:center;gap:0.4rem;"><span class="font-noto" style="font-size:12px;font-weight:200;letter-spacing:0.05em;">留白</span> Strategic Restraint</span>
+      </div>
+
+      <!-- Logic text -->
+      <div class="mist-reveal" style="transition-delay:380ms;max-width:58ch;">
+        <p style="font-size:0.72rem;color:rgba(255,255,255,0.25);line-height:1.9;letter-spacing:0.02em;">
+          Architecting a space where technical rigor meets social adrenaline, ensuring the interface provides the breathing room necessary for a community to actually inhabit the space.
+        </p>
+      </div>
+
     </div>
   </section>
 
   <!-- ============================================================
        03 — THE PROBLEM: THE "GHOST TOWN" BOTTLENECK
        ============================================================ -->
-  <section class="py-24" style="position:relative;z-index:1;">
+  <section id="sec-03" class="py-24" style="position:relative;z-index:1;">
     <div class="grid grid-cols-12 px-6">
       <div class="col-start-3 col-span-8">
 
@@ -432,7 +624,7 @@
         </div>
 
         <div class="mist-reveal" style="transition-delay:80ms;">
-          <p style="font-size:0.9375rem;color:rgba(255,255,255,0.54);line-height:1.9;margin-bottom:1rem;">
+          <p style="font-size:1.125rem;color:rgba(255,255,255,0.54);line-height:1.9;margin-bottom:1rem;">
             The existing Showcase was outdated and overly technical, leading to community stagnation. While users were still posting monthly, engagement was nearly non-existent. The Product Management team requested a UI facelift — but I identified a deeper architectural flaw: the platform lacked a social <strong style="color:rgba(255,255,255,0.74);font-weight:500;">'reason to stay'</strong> after the build was complete.
           </p>
         </div>
@@ -444,7 +636,7 @@
   <!-- ============================================================
        04 — BUSINESS CONCERNS & SKEPTICISM
        ============================================================ -->
-  <section class="py-20" style="position:relative;z-index:1;">
+  <section id="sec-04" class="py-20" style="position:relative;z-index:1;">
     <div class="grid grid-cols-12 px-6">
       <div class="col-start-3 col-span-8">
 
@@ -457,12 +649,10 @@
         </div>
 
         <div class="mist-reveal" style="transition-delay:80ms;">
-          <div class="concern-quote">
-            <div class="label-cyan" style="margin-bottom:0.85rem;">My Concern</div>
-            <p style="font-size:0.9375rem;color:rgba(255,255,255,0.58);line-height:1.9;">
-              During kickoff, I grew skeptical that a UI modernization alone could revive the platform, given that engagement rates had historically remained under 30%. I challenged the brief: we didn't just need new pixels — we needed a new <strong style="color:rgba(255,255,255,0.78);">Product Strategy to bridge the gap between technical utility and human interaction.</strong>
-            </p>
-          </div>
+          <div class="label-cyan" style="margin-bottom:0.85rem;">My Concern</div>
+          <p style="font-size:1.125rem;color:rgba(255,255,255,0.58);line-height:1.9;">
+            During kickoff, I grew skeptical that a UI modernization alone could revive the platform, given that engagement rates had historically remained under 30%. I challenged the brief: we didn't just need new pixels — we needed a new <strong style="color:rgba(255,255,255,0.78);">Product Strategy to bridge the gap between technical utility and human interaction.</strong>
+          </p>
         </div>
 
       </div>
@@ -472,7 +662,7 @@
   <!-- ============================================================
        05 — RESEARCH: DIAGNOSING THE CULTURAL PHYSICS
        ============================================================ -->
-  <section class="py-20" style="position:relative;z-index:1;">
+  <section id="sec-05" class="py-20" style="position:relative;z-index:1;">
     <div class="grid grid-cols-12 px-6">
       <div class="col-start-3 col-span-8">
 
@@ -485,11 +675,9 @@
         </div>
 
         <div class="mist-reveal" style="transition-delay:80ms;">
-          <div class="pivot-callout">
-            <p>
-              "To build a world, you must understand its laws. I used AI-assisted behavioral analysis to map the motivators of top contributors on Reddit and Discord. I discovered that while builders care about specs, they are driven by reputation, humor, and showing off. I benchmarked competitors like PC Part Picker and Reddit to identify the 'Aha!' moments in content discovery and reward systems."
-            </p>
-          </div>
+          <p style="font-size:1.125rem;color:rgba(255,255,255,0.54);line-height:1.9;">
+            To build a world, you must understand its laws. I used AI-assisted behavioral analysis to map the motivators of top contributors on Reddit and Discord. I discovered that while builders care about specs, they are driven by reputation, humor, and showing off. I benchmarked competitors like PC Part Picker and Reddit to identify the 'Aha!' moments in content discovery and reward systems.
+          </p>
         </div>
 
       </div>
@@ -499,7 +687,7 @@
   <!-- ============================================================
        06 — KEY INSIGHT: THE BUILDER–GAMER INTERSECTION
        ============================================================ -->
-  <section class="py-24" style="position:relative;z-index:1;">
+  <section id="sec-06" class="py-24" style="position:relative;z-index:1;">
     <div class="grid grid-cols-12 px-6">
       <div class="col-start-3 col-span-8">
 
@@ -512,7 +700,7 @@
         </div>
 
         <div class="mist-reveal mb-8" style="transition-delay:80ms;">
-          <p style="font-size:0.9375rem;color:rgba(255,255,255,0.5);line-height:1.85;max-width:560px;">
+          <p style="font-size:1.125rem;color:rgba(255,255,255,0.5);line-height:1.85;">
             Research revealed a massive <strong style="color:rgba(255,255,255,0.72);font-weight:500;">'Engagement Bottleneck'</strong>: hardware discussions are often transactional — once a problem is fixed, the conversation dies.
           </p>
         </div>
@@ -651,7 +839,7 @@
   <!-- ============================================================
        07 — THE DISCOVERY & STRATEGIC SHIFT
        ============================================================ -->
-  <section class="py-24" style="position:relative;z-index:1;">
+  <section id="sec-07" class="py-24" style="position:relative;z-index:1;">
     <div class="grid grid-cols-12 px-6">
       <div class="col-start-3 col-span-8">
 
@@ -664,16 +852,14 @@
         </div>
 
         <div class="mist-reveal mb-8" style="transition-delay:80ms;">
-          <div class="pivot-callout">
-            <div style="font-size:0.6rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(232,184,42,0.65);margin-bottom:0.75rem;font-weight:600;">The Discovery</div>
-            <p>
-              "A significant portion of 'Builders' are actually 'Gamers' optimizing for performance. By introducing gamers into the builder ecosystem, we provided the social adrenaline needed to keep the community active post-purchase."
-            </p>
-          </div>
+          <div style="font-size:0.6rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(232,184,42,0.65);margin-bottom:0.75rem;font-weight:600;">The Discovery</div>
+          <p style="font-size:1.125rem;color:rgba(255,255,255,0.54);line-height:1.9;">
+            A significant portion of 'Builders' are actually 'Gamers' optimizing for performance. By introducing gamers into the builder ecosystem, we provided the social adrenaline needed to keep the community active post-purchase.
+          </p>
         </div>
 
         <div class="mist-reveal mb-8" style="transition-delay:160ms;">
-          <p style="font-size:0.9375rem;color:rgba(255,255,255,0.52);line-height:1.9;">
+          <p style="font-size:1.125rem;color:rgba(255,255,255,0.52);line-height:1.9;">
             I scheduled a follow-up meeting with the product management and tech team to showcase my findings and <strong style="color:rgba(255,255,255,0.74);font-weight:500;">successfully pivot the project</strong> — upgrading both the technical Showcase and launching a standalone Gamer Community Forum.
           </p>
         </div>
@@ -685,9 +871,9 @@
           <div class="glass-card rounded-xl p-7 relative overflow-hidden">
             <div class="cloud-hover-effect" aria-hidden="true"></div>
             <div class="label-cyan" style="margin-bottom:1rem;">The Strategic Shift</div>
-            <div class="goal-li"><div class="goal-dot"></div><span>Upgrade the PC Build Showcase with better usability and social affordances</span></div>
-            <div class="goal-li"><div class="goal-dot"></div><span>Launch a standalone Gamer Community Forum (open-source MVP), with PC Build Showcase as a category within it</span></div>
-            <div class="goal-li" style="margin-bottom:0;"><div class="goal-dot"></div><span>Introduce gamers into the builder ecosystem — providing the social layer to sustain engagement post-purchase</span></div>
+            <div class="goal-li"><span>Upgrade the PC Build Showcase with better usability and social affordances</span></div>
+            <div class="goal-li"><span>Launch a standalone Gamer Community Forum (open-source MVP), with PC Build Showcase as a category within it</span></div>
+            <div class="goal-li" style="margin-bottom:0;"><span>Introduce gamers into the builder ecosystem — providing the social layer to sustain engagement post-purchase</span></div>
           </div>
         </div>
 
@@ -698,7 +884,7 @@
   <!-- ============================================================
        08 — UX ARCHITECTURE: THE COMMUNITY ROADMAP
        ============================================================ -->
-  <section class="py-24" style="position:relative;z-index:1;">
+  <section id="sec-08" class="py-24" style="position:relative;z-index:1;">
     <div class="grid grid-cols-12 px-6">
       <div class="col-start-3 col-span-8">
 
@@ -711,7 +897,7 @@
         </div>
 
         <div class="mist-reveal mb-10" style="transition-delay:80ms;">
-          <p style="font-size:0.9375rem;color:rgba(255,255,255,0.44);line-height:1.82;max-width:520px;font-style:italic;">
+          <p style="font-size:1.125rem;color:rgba(255,255,255,0.44);line-height:1.82;font-style:italic;">
             "I established a phased design system to monitor engagement without forced promotion."
           </p>
         </div>
@@ -751,7 +937,7 @@
   <!-- ============================================================
        09 — PART 1: IMPROVED PC BUILD SHOWCASE FORUM
        ============================================================ -->
-  <section class="py-24" style="position:relative;z-index:1;">
+  <section id="sec-09" class="py-24" style="position:relative;z-index:1;">
     <div class="grid grid-cols-12 px-6">
       <div class="col-start-3 col-span-8">
 
@@ -764,10 +950,10 @@
         </div>
 
         <div class="mist-reveal mb-10" style="transition-delay:80ms;">
-          <p style="font-size:0.95rem;color:rgba(255,255,255,0.54);line-height:1.92;max-width:600px;margin-bottom:1.25rem;">
+          <p style="font-size:1.125rem;color:rgba(255,255,255,0.54);line-height:1.92;margin-bottom:1.25rem;">
             By prioritizing surgical clarity and high-fidelity visual storytelling, I transformed the PC Build Showcase into a <strong style="color:rgba(255,255,255,0.76);font-weight:500;">digital workshop that celebrates technical craftsmanship.</strong> The interface leverages immersive, "blown-up" visuals to honor the user's fruit of labor, while deploying structured filters that cater to the surgical precision required by goal-oriented builders.
           </p>
-          <p style="font-size:0.95rem;color:rgba(255,255,255,0.44);line-height:1.92;max-width:600px;">
+          <p style="font-size:1.125rem;color:rgba(255,255,255,0.44);line-height:1.92;">
             This is where the technical rigor of the "World" is established — moving the platform away from a static gallery and into a high-utility environment where every component is documented with intent.
           </p>
         </div>
@@ -836,7 +1022,7 @@
   <!-- ============================================================
        10 — PART 2: BUILDING THE GAMER COMMUNITY
        ============================================================ -->
-  <section class="py-24" style="position:relative;z-index:1;">
+  <section id="sec-10" class="py-24" style="position:relative;z-index:1;">
     <div class="grid grid-cols-12 px-6">
       <div class="col-start-3 col-span-8">
 
@@ -851,12 +1037,12 @@
         <div class="mist-reveal mb-10" style="transition-delay:80ms;">
           <div class="glass-card rounded-2xl p-9 relative overflow-hidden">
             <div class="cloud-hover-effect" aria-hidden="true"></div>
-            <div class="about-quote" style="margin:0 0 1.5rem;border-left-color:rgba(232,184,42,0.5);">
+            <p style="font-size:1.125rem;color:rgba(255,255,255,0.58);line-height:1.9;margin-bottom:1.5rem;">
               The final ecosystem functions as a high-velocity social engine where the UI serves as a silent, invisible infrastructure. By mastering the tension between high information density and
               <span class="font-noto" style="color:#E8B82A;"> 留白</span>
               (intentional void), the design actively avoids the visual noise of a marketplace — and more like a focused collaborative arena.
-            </div>
-            <p style="font-size:0.9375rem;color:rgba(255,255,255,0.46);line-height:1.88;">
+            </p>
+            <p style="font-size:1.125rem;color:rgba(255,255,255,0.46);line-height:1.88;">
               This strategic minimalism ensures the interface remains a background framework, prioritizing the organic exchange of tribal knowledge, expressive social cues, and peer-to-peer reputation — transforming abstract hardware advice into actionable, purchase-ready configurations and closing the user journey loop.
             </p>
           </div>
@@ -927,7 +1113,7 @@
           <div style="height:1px;background:linear-gradient(to right,rgba(255,255,255,0.06),transparent);margin-bottom:2.5rem;"></div>
           <div class="flex items-end justify-between">
             <div>
-              <p style="font-size:0.9375rem;color:rgba(255,255,255,0.35);margin-bottom:1rem;">Return to portfolio or start a conversation</p>
+              <p style="font-size:1.125rem;color:rgba(255,255,255,0.35);margin-bottom:1rem;">Return to portfolio or start a conversation</p>
               <div class="flex gap-4">
                 <a href="index.html" class="cta-btn">&#8592;&nbsp; Portfolio</a>
                 <a href="index.html#about" class="cta-btn cta-btn-cyan">Get in Touch</a>
@@ -939,6 +1125,61 @@
       </div>
     </div>
   </footer>
+
+  <!-- ============================================================
+       SCROLL NAV — Chinese painting scroll
+       ============================================================ -->
+  <nav id="scroll-nav" aria-label="Page sections">
+    <a class="snav-item" href="#sec-01">
+      <span class="snav-num">01</span>
+      <span class="snav-label" data-text="Context">Context</span>
+    </a>
+    <div class="snav-divider"></div>
+    <a class="snav-item" href="#sec-02">
+      <span class="snav-num">02</span>
+      <span class="snav-label" data-text="Mission">Mission</span>
+    </a>
+    <div class="snav-divider"></div>
+    <a class="snav-item" href="#sec-03">
+      <span class="snav-num">03</span>
+      <span class="snav-label" data-text="Problem">Problem</span>
+    </a>
+    <div class="snav-divider"></div>
+    <a class="snav-item" href="#sec-04">
+      <span class="snav-num">04</span>
+      <span class="snav-label" data-text="Concern">Concern</span>
+    </a>
+    <div class="snav-divider"></div>
+    <a class="snav-item" href="#sec-05">
+      <span class="snav-num">05</span>
+      <span class="snav-label" data-text="Research">Research</span>
+    </a>
+    <div class="snav-divider"></div>
+    <a class="snav-item" href="#sec-06">
+      <span class="snav-num">06</span>
+      <span class="snav-label" data-text="Insights">Insights</span>
+    </a>
+    <div class="snav-divider"></div>
+    <a class="snav-item" href="#sec-07">
+      <span class="snav-num">07</span>
+      <span class="snav-label" data-text="Discovery">Discovery</span>
+    </a>
+    <div class="snav-divider"></div>
+    <a class="snav-item" href="#sec-08">
+      <span class="snav-num">08</span>
+      <span class="snav-label" data-text="Architect">Architect</span>
+    </a>
+    <div class="snav-divider"></div>
+    <a class="snav-item" href="#sec-09">
+      <span class="snav-num">09</span>
+      <span class="snav-label" data-text="Part I">Part I</span>
+    </a>
+    <div class="snav-divider"></div>
+    <a class="snav-item" href="#sec-10">
+      <span class="snav-num">10</span>
+      <span class="snav-label" data-text="Part II">Part II</span>
+    </a>
+  </nav>
 
   <script>
     // Mist reveal
@@ -962,6 +1203,37 @@
       nav.style.paddingTop    = s ? '1rem' : '2rem';
       nav.style.paddingBottom = s ? '1rem' : '2rem';
     }, { passive: true });
+
+    // Scroll nav shiny — runs once per item, never replays
+    document.querySelectorAll('.snav-item').forEach(function(item) {
+      item.addEventListener('mouseenter', function() {
+        if (item.classList.contains('shiny-done') || item.classList.contains('shiny-active')) return;
+        item.classList.add('shiny-active');
+        setTimeout(function() {
+          item.classList.remove('shiny-active');
+          item.classList.add('shiny-done');
+        }, 1500);
+      });
+    });
+
+    // Scroll nav active section highlight
+    (function() {
+      var ids = ['sec-01','sec-02','sec-03','sec-04','sec-05','sec-06','sec-07','sec-08','sec-09','sec-10'];
+      var items = document.querySelectorAll('.snav-item');
+      function onScroll() {
+        var mid = window.scrollY + window.innerHeight * 0.4;
+        var active = ids[0];
+        ids.forEach(function(id) {
+          var el = document.getElementById(id);
+          if (el && el.offsetTop <= mid) active = id;
+        });
+        items.forEach(function(item) {
+          item.classList.toggle('active', item.getAttribute('href') === '#' + active);
+        });
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    })();
   </script>
 
 </body>
