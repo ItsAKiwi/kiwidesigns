@@ -155,7 +155,7 @@ function Nav() {
 /* ---- Feature Card — Gamer Community ------------------------- */
 function FeatureCard() {
   return (
-    <div className="glass-card rounded-2xl p-8 relative overflow-hidden">
+    <div className="glass-card rounded-2xl p-8 relative overflow-hidden" style={{cursor:'pointer'}} onClick={() => window.location.href = 'gamer-community.html'}>
       {/* Cloud & gold hover overlay — screen-blends so text is never obscured */}
       <div className="cloud-hover-effect" aria-hidden="true" />
       {/* Cyan ambient glow */}
@@ -355,24 +355,6 @@ const PROJECTS = [
       'If design is world-building, these are the atoms. I don\'t believe in starting a new world from a blank screen, so I built this foundry to house the small, AI-assisted tools that jumpstart my process.',
     tags: ['AI-Assisted', 'Design Tooling', 'Creative Systems'],
     year: '2025',
-  },
-  {
-    id: '02',
-    title: 'Fintech Onboarding Flow',
-    category: 'Product Design',
-    description:
-      'Redesigned the core onboarding through progressive disclosure and social proof triggers — completion rates rose from 34% to 71%, activating $12M in dormant accounts.',
-    tags: ['Conversion Optimization', 'Information Architecture'],
-    year: '2023',
-  },
-  {
-    id: '03',
-    title: 'B2B Analytics Dashboard',
-    category: 'UX Strategy',
-    description:
-      'Transformed a dense analytics platform into a command center built around decision-making patterns. Adopted by 500+ enterprise clients with a 92% satisfaction rate.',
-    tags: ['Data Visualization', 'Enterprise UX', 'Mental Models'],
-    year: '2023',
   },
 ];
 
