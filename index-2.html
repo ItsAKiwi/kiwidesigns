@@ -69,19 +69,18 @@
       padding-bottom: 0;
     }
     /* Circular portal arc — inverted duplicate behind main mountain */
+    /* clip-path used instead of border-radius+overflow because mix-blend-mode
+       breaks overflow:hidden clipping in all major browsers */
     .mountain-arc {
       position: absolute;
-      top: -12vh;
+      top: -14vh;
       left: 50%;
       transform: translateX(-50%) rotate(180deg);
       width: 62vw;
       height: 62vw;
-      max-width: 720px;
-      max-height: 720px;
-      border-radius: 50%;
-      overflow: hidden;
+      clip-path: circle(50% at 50% 50%);
       mix-blend-mode: screen;
-      opacity: 0.42;
+      opacity: 0.48;
       z-index: 0;
       pointer-events: none;
       flex-shrink: 0;
