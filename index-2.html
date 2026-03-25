@@ -65,62 +65,36 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
       overflow: hidden;
-      text-align: center;
+      padding-bottom: 0;
     }
-    /* Mountain image — behind all text */
+    /* Mountain — upper center, fades out at bottom via mask */
     .hero2-mountain {
-      position: absolute;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      height: 100%;
+      display: block;
+      height: 72vh;
       width: auto;
-      max-width: none;
-      object-fit: cover;
-      object-position: top center;
+      max-width: 560px;
+      object-fit: contain;
+      object-position: center bottom;
       mix-blend-mode: screen;
-      opacity: 0.6;
+      opacity: 0.82;
       pointer-events: none;
-      z-index: 0;
+      flex-shrink: 0;
+      /* Fade image out from 38% down to nothing at 82% */
+      -webkit-mask-image: linear-gradient(to bottom, black 0%, black 36%, transparent 82%);
+      mask-image: linear-gradient(to bottom, black 0%, black 36%, transparent 82%);
     }
-    /* Gradient-blur overlay — covers bottom half, fades image into page */
-    .hero2-grad {
-      position: absolute;
-      inset: 0;
-      z-index: 1;
-      pointer-events: none;
-      background: linear-gradient(
-        to bottom,
-        transparent 0%,
-        transparent 30%,
-        rgba(10,12,16,0.55) 55%,
-        #0A0C10 80%
-      );
-    }
-    /* Soft blur layer — bottom 50% only, via mask */
-    .hero2-blur {
-      position: absolute;
-      left: 0; right: 0;
-      bottom: 0;
-      height: 55%;
-      z-index: 1;
-      pointer-events: none;
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      -webkit-mask-image: linear-gradient(to top, black 40%, transparent 100%);
-      mask-image: linear-gradient(to top, black 40%, transparent 100%);
-    }
-    /* Text content above overlays */
+    /* Text block — pulled up to overlap the mountain's fade zone */
     .hero2-content {
       position: relative;
       z-index: 2;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 8rem 2rem 5rem;
-      max-width: 720px;
+      text-align: center;
+      padding: 0 2rem 5rem;
+      margin-top: -22vh;
+      max-width: 760px;
     }
 
     /* Services */
@@ -460,21 +434,16 @@ function Nav() {
 /* ---- Hero ---------------------------------------------------- */
 function Hero() {
   return (
-    <section className="hero2-section" style={{ paddingBottom: 0 }}>
+    <section className="hero2-section">
 
-      {/* Mountain image — absolute, behind everything */}
+      {/* Mountain — upper center, mask fades it out downward */}
       <img
         src="images/Mountain-Silhouette_V.png"
         alt=""
         aria-hidden="true"
         className="hero2-mountain"
+        style={{ marginTop: '4rem' }}
       />
-
-      {/* Gradient overlay — fades bottom half to page color */}
-      <div className="hero2-grad" />
-
-      {/* Blur overlay — blurs the bottom half through mask */}
-      <div className="hero2-blur" />
 
       {/* Centered text content */}
       <div className="hero2-content">
