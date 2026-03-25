@@ -68,23 +68,22 @@
       overflow: hidden;
       padding-bottom: 0;
     }
-    /* Mountain — upper center, fades out at bottom via mask */
+    /* Mountain — upper center, fades out at bottom via mask — 50% bigger */
     .hero2-mountain {
       display: block;
-      height: 72vh;
+      height: 108vh;
       width: auto;
-      max-width: 560px;
+      max-width: 840px;
       object-fit: contain;
       object-position: center bottom;
       mix-blend-mode: screen;
       opacity: 0.82;
       pointer-events: none;
       flex-shrink: 0;
-      /* Fade image out from 38% down to nothing at 82% */
       -webkit-mask-image: linear-gradient(to bottom, black 0%, black 36%, transparent 82%);
       mask-image: linear-gradient(to bottom, black 0%, black 36%, transparent 82%);
     }
-    /* Text block — pulled up to overlap the mountain's fade zone */
+    /* Text block — at halfway point of the mountain (54vh from top) */
     .hero2-content {
       position: relative;
       z-index: 2;
@@ -93,8 +92,26 @@
       align-items: center;
       text-align: center;
       padding: 0 2rem 5rem;
-      margin-top: -22vh;
+      margin-top: -54vh;
       max-width: 760px;
+      isolation: isolate;
+    }
+    /* Gradient blur backdrop so text is always readable over the mountain */
+    .hero2-content::before {
+      content: '';
+      position: absolute;
+      inset: -4rem -6rem;
+      background: radial-gradient(ellipse 85% 75% at 50% 45%,
+        rgba(10,12,16,0.72) 0%,
+        rgba(10,12,16,0.45) 40%,
+        transparent 70%
+      );
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      -webkit-mask-image: radial-gradient(ellipse 85% 75% at 50% 45%, black 35%, transparent 75%);
+      mask-image: radial-gradient(ellipse 85% 75% at 50% 45%, black 35%, transparent 75%);
+      z-index: -1;
+      pointer-events: none;
     }
 
     /* Services */
@@ -104,9 +121,7 @@
     }
     .service-card {
       padding: 2.8rem 2.4rem;
-      border-right: 1px solid rgba(255,255,255,0.05);
     }
-    .service-card:last-child { border-right: none; }
     .service-num {
       font-family: 'Noto Serif SC', serif;
       font-size: 0.62rem;
@@ -152,16 +167,60 @@
       position: relative;
       z-index: 1;
     }
+    /* 4 copies → animate -25% for guaranteed seamless loop */
     .tools-track {
       display: flex;
       gap: 2.5rem;
       align-items: center;
       width: max-content;
-      animation: toolsScroll 28s linear infinite;
+      will-change: transform;
+      animation: toolsScroll 32s linear infinite;
     }
     @keyframes toolsScroll {
       0%   { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
+      100% { transform: translateX(-25%); }
+    }
+
+    /* Chinese scroll container for service cards */
+    .scroll-card {
+      position: relative;
+      background:
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 22px,
+          rgba(232,184,42,0.018) 22px,
+          rgba(232,184,42,0.018) 23px
+        ),
+        linear-gradient(160deg, #0e0b07 0%, #100d09 50%, #0c0a06 100%);
+      border: 1px solid rgba(232,184,42,0.1);
+      border-radius: 1px;
+      padding: 2.6rem 2.4rem 2.8rem;
+      margin: 0.5rem;
+    }
+    /* Top rod */
+    .scroll-card::before {
+      content: '';
+      position: absolute;
+      top: -5px; left: -10px; right: -10px;
+      height: 8px;
+      background: linear-gradient(to right,
+        #0a0804, #2a1e10 15%, #3d2c18 35%, #4a3822 50%, #3d2c18 65%, #2a1e10 85%, #0a0804
+      );
+      border-radius: 4px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.6), inset 0 1px 0 rgba(232,184,42,0.15);
+    }
+    /* Bottom rod */
+    .scroll-card::after {
+      content: '';
+      position: absolute;
+      bottom: -5px; left: -10px; right: -10px;
+      height: 8px;
+      background: linear-gradient(to right,
+        #0a0804, #2a1e10 15%, #3d2c18 35%, #4a3822 50%, #3d2c18 65%, #2a1e10 85%, #0a0804
+      );
+      border-radius: 4px;
+      box-shadow: 0 -3px 10px rgba(0,0,0,0.6), inset 0 -1px 0 rgba(232,184,42,0.1);
     }
     .tool-badge {
       display: flex;
@@ -497,22 +556,22 @@ function Hero() {
   );
 }
 
-/* ---- Services (derived from About section) ------------------- */
+/* ---- Services ------------------------------------------------ */
 const SERVICES = [
   {
     num: '01',
-    title: 'UX Systems Architecture',
-    desc: 'I architect digital products as living ecosystems governed by the cultural physics of their users. Where others design pages, I design worlds with gravitational pull.',
+    title: 'Systems Thinking & World Building',
+    desc: 'I architect digital products as cohesive ecosystems rather than isolated screens. By establishing a consistent "logic" for the interface—grounded in user mental models and technical constraints—I build scalable UI systems that transform high-density data into intuitive, navigable landscapes.',
   },
   {
     num: '02',
-    title: 'Retention Engineering',
-    desc: 'Bridging technical density with the art of 留白. By mastering what to build and what to leave out, I transform cluttered interfaces into purposeful environments communities want to inhabit.',
+    title: 'Strategic Product Thinking',
+    desc: 'I solve business challenges by analyzing the entire user lifecycle. From identifying post-purchase "retention leaks" to designing community-driven MVPs, I implement strategic interventions that transform transactional platforms into high-engagement social destinations.',
   },
   {
     num: '03',
-    title: 'Strategic Restraint',
-    desc: "I don't just solve for clicks; I solve for the meta of the user experience. Every decision compounds into retention, conversion, and lasting competitive advantage.",
+    title: 'Information Architecture (留白)',
+    desc: 'I manage information density through the lens of Strategic Restraint. By applying the principle of 留白 (Liú Bái), I balance technical precision with intentional minimalism to reduce cognitive load—ensuring that the user\'s expertise and "tribal knowledge" remain the primary focus of the experience.',
   },
 ];
 
@@ -526,14 +585,13 @@ function ServicesGrid() {
               <span className="eyebrow">Expertise</span>
             </div>
           </MistReveal>
-          <div className="services-grid">
+          <div className="services-grid" style={{ gap: '2rem', paddingTop: '2rem' }}>
             {SERVICES.map((s, i) => (
               <MistReveal key={s.num} delay={i * 90}>
-                <div className="service-card">
+                <div className="scroll-card">
                   <span className="service-num">{s.num}</span>
                   <div className="service-name">{s.title}</div>
                   <p className="service-desc">{s.desc}</p>
-                  <a href="#work" className="service-lnk">Learn More &#8594;</a>
                 </div>
               </MistReveal>
             ))}
@@ -545,24 +603,56 @@ function ServicesGrid() {
 }
 
 /* ---- AI Tools Strip ------------------------------------------ */
+function GeminiLogo() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0 }}>
+      <defs>
+        <linearGradient id="gm-g" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#4285F4"/>
+          <stop offset="100%" stopColor="#9C27B0"/>
+        </linearGradient>
+      </defs>
+      <path d="M12 0C12 6.627 17.373 12 24 12C17.373 12 12 17.373 12 24C12 17.373 6.627 12 0 12C6.627 12 12 6.627 12 0Z" fill="url(#gm-g)"/>
+    </svg>
+  );
+}
+
+function LovartLogo() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0 }}>
+      <defs>
+        <linearGradient id="lv-g" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#C084FC"/>
+          <stop offset="100%" stopColor="#818CF8"/>
+        </linearGradient>
+      </defs>
+      <path d="M4 4 C4 4 8 2 12 8 C16 14 20 12 20 20" stroke="url(#lv-g)" strokeWidth="2.8" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+      <circle cx="20" cy="20" r="2.2" fill="#C084FC"/>
+    </svg>
+  );
+}
+
 const AI_TOOLS = [
-  { name: 'Claude',         dot: '#FF7A3D', color: '#FF9361' },
-  { name: 'Gemini 3',       dot: '#8AB4F8', color: '#8AB4F8' },
-  { name: 'NotebookLM',     dot: '#34A853', color: '#81C995' },
-  { name: 'Google Stitch',  dot: '#FBBC05', color: '#FBBC05' },
-  { name: 'Lovart',         dot: '#A78BFA', color: '#C4B5FD' },
-  { name: 'Figma Make',     dot: '#F778A1', color: '#F9A8C9' },
-  { name: 'Krea AI',        dot: 'rgba(255,255,255,0.5)', color: 'rgba(255,255,255,0.55)' },
+  { name: 'Claude',        dot: '#FF7A3D', color: '#FF9361', logo: null },
+  { name: 'Gemini',        dot: '#8AB4F8', color: '#8AB4F8', logo: 'gemini' },
+  { name: 'NotebookLM',   dot: '#34A853', color: '#81C995', logo: null },
+  { name: 'Google Stitch', dot: '#FBBC05', color: '#FBBC05', logo: null },
+  { name: 'Lovart',        dot: '#A78BFA', color: '#C4B5FD', logo: 'lovart' },
+  { name: 'Figma Make',   dot: '#F778A1', color: '#F9A8C9', logo: null },
+  { name: 'Krea AI',      dot: 'rgba(255,255,255,0.45)', color: 'rgba(255,255,255,0.5)', logo: null },
 ];
 
 function AIToolsStrip() {
-  const doubled = [...AI_TOOLS, ...AI_TOOLS];
+  /* 4 copies → animate -25% → guaranteed seamless loop */
+  const quad = [...AI_TOOLS, ...AI_TOOLS, ...AI_TOOLS, ...AI_TOOLS];
   return (
     <section className="tools-strip">
       <div className="tools-track">
-        {doubled.map((t, i) => (
-          <div key={i} className="tool-badge" style={{ color: t.color, borderColor: `${t.dot}25` }}>
-            <span className="tool-dot" style={{ background: t.dot, boxShadow: `0 0 5px ${t.dot}` }} />
+        {quad.map((t, i) => (
+          <div key={i} className="tool-badge" style={{ color: t.color, borderColor: `${t.dot}28` }}>
+            {t.logo === 'gemini' ? <GeminiLogo /> :
+             t.logo === 'lovart' ? <LovartLogo /> :
+             <span className="tool-dot" style={{ background: t.dot, boxShadow: `0 0 5px ${t.dot}` }} />}
             {t.name}
           </div>
         ))}
