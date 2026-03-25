@@ -59,20 +59,68 @@
     }
 
     /* Hero */
-    .hero2-wrap {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      min-height: 100vh;
-      align-items: center;
-    }
-    .hero2-mountain {
-      width: 85%;
-      max-width: 480px;
-      object-fit: contain;
-      mix-blend-mode: screen;
-      opacity: 0.72;
+    .hero2-section {
       position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      text-align: center;
+    }
+    /* Mountain image — behind all text */
+    .hero2-mountain {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      height: 100%;
+      width: auto;
+      max-width: none;
+      object-fit: cover;
+      object-position: top center;
+      mix-blend-mode: screen;
+      opacity: 0.6;
+      pointer-events: none;
+      z-index: 0;
+    }
+    /* Gradient-blur overlay — covers bottom half, fades image into page */
+    .hero2-grad {
+      position: absolute;
+      inset: 0;
       z-index: 1;
+      pointer-events: none;
+      background: linear-gradient(
+        to bottom,
+        transparent 0%,
+        transparent 30%,
+        rgba(10,12,16,0.55) 55%,
+        #0A0C10 80%
+      );
+    }
+    /* Soft blur layer — bottom 50% only, via mask */
+    .hero2-blur {
+      position: absolute;
+      left: 0; right: 0;
+      bottom: 0;
+      height: 55%;
+      z-index: 1;
+      pointer-events: none;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      -webkit-mask-image: linear-gradient(to top, black 40%, transparent 100%);
+      mask-image: linear-gradient(to top, black 40%, transparent 100%);
+    }
+    /* Text content above overlays */
+    .hero2-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 8rem 2rem 5rem;
+      max-width: 720px;
     }
 
     /* Services */
@@ -314,11 +362,10 @@
 
     /* Responsive */
     @media (max-width: 900px) {
-      .hero2-wrap { grid-template-columns: 1fr; }
-      .hero2-mountain-col { display: none; }
       .services-grid { grid-template-columns: 1fr; }
       .service-card { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.05); }
       .work-card-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .hero2-content { padding: 7rem 1.5rem 4rem; }
     }
   </style>
 </head>
@@ -413,73 +460,68 @@ function Nav() {
 /* ---- Hero ---------------------------------------------------- */
 function Hero() {
   return (
-    <section className="relative" style={{ zIndex: 1, paddingBottom: 0 }}>
-      <div className="grid grid-cols-12 px-6 hero2-wrap" style={{ minHeight: '100vh' }}>
+    <section className="hero2-section" style={{ paddingBottom: 0 }}>
 
-        {/* Left — text stack */}
-        <div className="col-start-2 col-span-5" style={{ paddingTop: '6rem', paddingBottom: '4rem', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-          <MistReveal delay={60}>
-            <p className="eyebrow mb-6">Portfolio — 2024</p>
-          </MistReveal>
+      {/* Mountain image — absolute, behind everything */}
+      <img
+        src="images/Mountain-Silhouette_V.png"
+        alt=""
+        aria-hidden="true"
+        className="hero2-mountain"
+      />
 
-          <MistReveal delay={160}>
-            <h1 className="font-bold" style={{
-              fontSize: 'clamp(3rem, 6vw, 6rem)',
-              letterSpacing: '-0.055em',
-              lineHeight: '0.93',
-              marginBottom: '2rem',
-              color: '#ffffff',
-            }}>
-              Architecting
-              <br />
-              <span style={{ color: 'rgba(255,255,255,0.28)' }}>Digital</span>
-              <br />
-              Citadels
-            </h1>
-          </MistReveal>
+      {/* Gradient overlay — fades bottom half to page color */}
+      <div className="hero2-grad" />
 
-          <MistReveal delay={300}>
-            <p className="text-slate-400 mb-10" style={{ lineHeight: '1.8', maxWidth: '420px', fontSize: '1rem' }}>
-              UX strategy is not decoration — it is the structural engineering
-              beneath the surface. Every interface decision compounds into
-              retention, conversion, and lasting competitive advantage.
-            </p>
-          </MistReveal>
+      {/* Blur overlay — blurs the bottom half through mask */}
+      <div className="hero2-blur" />
 
-          <MistReveal delay={420}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-              <a href="#work" className="cta-btn">
-                Explore Work <span>&#8594;</span>
-              </a>
-              <a href="#about"
-                style={{ fontSize: '0.7rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.38)', textDecoration: 'none', transition: 'color 0.3s' }}
-                onMouseEnter={e => e.currentTarget.style.color = 'rgba(255,255,255,0.7)'}
-                onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.38)'}
-              >
-                About
-              </a>
-            </div>
-          </MistReveal>
-        </div>
+      {/* Centered text content */}
+      <div className="hero2-content">
 
-        {/* Right — Mountain image */}
-        <div className="col-span-6 col-start-7 hero2-mountain-col" style={{
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          position: 'relative', height: '100vh',
-        }}>
-          {/* Radial glow behind mountain */}
-          <div style={{
-            position: 'absolute', inset: 0,
-            background: 'radial-gradient(ellipse at 50% 60%, rgba(232,184,42,0.05) 0%, transparent 65%)',
-            pointerEvents: 'none',
-          }} />
-          <img
-            src="images/Mountain-Silhouette_V.png"
-            alt=""
-            aria-hidden="true"
-            className="hero2-mountain"
-          />
-        </div>
+        <MistReveal delay={60}>
+          <p className="eyebrow mb-6">Portfolio — 2024</p>
+        </MistReveal>
+
+        <MistReveal delay={160}>
+          <h1 className="font-bold" style={{
+            fontSize: 'clamp(3.2rem, 8vw, 7rem)',
+            letterSpacing: '-0.055em',
+            lineHeight: '0.93',
+            marginBottom: '2rem',
+            color: '#ffffff',
+            textAlign: 'center',
+          }}>
+            Architecting
+            <br />
+            <span style={{ color: 'rgba(255,255,255,0.28)' }}>Digital</span>
+            <br />
+            Citadels
+          </h1>
+        </MistReveal>
+
+        <MistReveal delay={300}>
+          <p className="text-slate-400 mb-10" style={{ lineHeight: '1.8', maxWidth: '480px', fontSize: '1rem', textAlign: 'center' }}>
+            UX strategy is not decoration — it is the structural engineering
+            beneath the surface. Every interface decision compounds into
+            retention, conversion, and lasting competitive advantage.
+          </p>
+        </MistReveal>
+
+        <MistReveal delay={420}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', justifyContent: 'center' }}>
+            <a href="#work" className="cta-btn">
+              Explore Work <span>&#8594;</span>
+            </a>
+            <a href="#about"
+              style={{ fontSize: '0.7rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.38)', textDecoration: 'none', transition: 'color 0.3s' }}
+              onMouseEnter={e => e.currentTarget.style.color = 'rgba(255,255,255,0.7)'}
+              onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.38)'}
+            >
+              About
+            </a>
+          </div>
+        </MistReveal>
 
       </div>
     </section>
