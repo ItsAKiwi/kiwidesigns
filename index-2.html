@@ -99,7 +99,7 @@
       max-width: 80vw;
       isolation: isolate;
     }
-    /* Gradient glass backdrop — 0% opacity at very top, builds naturally downward */
+    /* Gradient glass backdrop — fades in from top, peaks at title, fades out below title */
     .hero2-content::before {
       content: '';
       position: absolute;
@@ -107,16 +107,33 @@
       background: linear-gradient(
         to bottom,
         transparent 0%,
-        rgba(10,12,16,0.18) 18%,
-        rgba(10,12,16,0.58) 42%,
-        rgba(10,12,16,0.82) 65%,
-        rgba(10,12,16,0.88) 100%
+        rgba(10,12,16,0.18) 16%,
+        rgba(10,12,16,0.72) 38%,
+        rgba(10,12,16,0.78) 52%,
+        rgba(10,12,16,0.30) 68%,
+        transparent 82%
       );
       backdrop-filter: blur(18px);
       -webkit-backdrop-filter: blur(18px);
-      /* Mask ensures zero opacity right at the top edge — no hard line */
-      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.3) 12%, black 30%);
-      mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.3) 12%, black 30%);
+      /* Mask: transparent → opaque at title → transparent again below title */
+      -webkit-mask-image: linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(0,0,0,0.25) 10%,
+        black 26%,
+        black 54%,
+        rgba(0,0,0,0.15) 68%,
+        transparent 82%
+      );
+      mask-image: linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(0,0,0,0.25) 10%,
+        black 26%,
+        black 54%,
+        rgba(0,0,0,0.15) 68%,
+        transparent 82%
+      );
       border-radius: 12px;
       z-index: -1;
       pointer-events: none;
