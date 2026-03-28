@@ -99,42 +99,37 @@
       max-width: 80vw;
       isolation: isolate;
     }
-    /* Gradient glass backdrop — fades in from top, peaks at title, fades out below title */
+    /* Gradient glass backdrop:
+       - transparent above content (0 → 60px)
+       - 20px smooth fade: 60px → 80px  (80px = the 5rem top inset = eyebrow level)
+       - 100% opaque from eyebrow downward through bottom of container */
     .hero2-content::before {
       content: '';
       position: absolute;
       inset: -5rem -7rem;
       background: linear-gradient(
         to bottom,
-        transparent 0%,
-        rgba(10,12,16,0.18) 16%,
-        rgba(10,12,16,0.72) 38%,
-        rgba(10,12,16,0.78) 52%,
-        rgba(10,12,16,0.30) 68%,
-        transparent 82%
+        transparent 0px,
+        transparent 60px,
+        rgba(10,12,16,0.88) 80px,
+        rgba(10,12,16,0.92) 100%
       );
       backdrop-filter: blur(18px);
       -webkit-backdrop-filter: blur(18px);
-      /* Mask: transparent → opaque at title → transparent again below title */
       -webkit-mask-image: linear-gradient(
         to bottom,
-        transparent 0%,
-        rgba(0,0,0,0.25) 10%,
-        black 26%,
-        black 54%,
-        rgba(0,0,0,0.15) 68%,
-        transparent 82%
+        transparent 0px,
+        transparent 60px,
+        black 80px,
+        black 100%
       );
       mask-image: linear-gradient(
         to bottom,
-        transparent 0%,
-        rgba(0,0,0,0.25) 10%,
-        black 26%,
-        black 54%,
-        rgba(0,0,0,0.15) 68%,
-        transparent 82%
+        transparent 0px,
+        transparent 60px,
+        black 80px,
+        black 100%
       );
-      border-radius: 12px;
       z-index: -1;
       pointer-events: none;
     }
