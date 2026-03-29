@@ -1040,7 +1040,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(<App />);
   const HALF = hfExt.HALF_FLOAT_OES;
 
   // Config
-  const SIM=128, DYE=256, VD=0.95, DD=0.93, PI=20, CL=12, SR=0.0014, SF=1200;
+  const SIM=128, DYE=256, VD=0.96, DD=0.965, PI=20, CL=12, SR=0.002, SF=1200;
 
   const VS=`precision highp float;
     attribute vec2 aPos;varying vec2 vUv,vL,vR,vT,vB;uniform vec2 texel;
@@ -1222,7 +1222,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(<App />);
     const h=hue*6,i=Math.floor(h),f=h-i;
     const p2=0.2,q=1-0.8*f,t2=0.2+0.8*f;
     const m=[[1,t2,p2],[q,1,p2],[p2,1,t2],[p2,q,1],[t2,p2,1],[1,p2,q]][i];
-    return m.map(v=>v*0.38);
+    return m.map(v=>v*0.65);
   }
 
   const ptr={x:0,y:0,dx:0,dy:0,active:false,color:nextColor()};
