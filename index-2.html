@@ -475,7 +475,7 @@
 <body style="background:#0A0C10;color:#fff;">
 
   <div id="root"></div>
-  <canvas id="fluid-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;mix-blend-mode:screen;"></canvas>
+  <canvas id="fluid-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;"></canvas>
 
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -1036,8 +1036,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(<App />);
   syncSize();
   window.addEventListener('resize',syncSize);
 
-  // Site palette: cyan, gold, discord blue, soft purple
-  const PALETTE=[[0,212,255],[232,184,42],[88,101,242],[160,90,255]];
+  // Dark navy ink — darker-toned strokes on the dark background
+  const PALETTE=[[18,32,100],[12,22,80],[22,38,115]];
   let palIdx=0, currentColor=PALETTE[0], idleTimer=null;
 
   const MAX_AGE=700; // ms trail lifetime
@@ -1071,12 +1071,12 @@ ReactDOM.createRoot(document.getElementById('root')).render(<App />);
     for(let i=1;i<trail.length;i++){
       const a=trail[i-1], b=trail[i];
       const age=(now-b.t)/MAX_AGE;          // 0=fresh → 1=gone
-      const alpha=Math.max(0,1-age)*0.5;
+      const alpha=Math.max(0,1-age)*0.25;
       if(alpha<0.01) continue;
 
-      // Paintbrush: slow cursor = thick stroke, fast = thin
+      // Calligraphy ink: slow cursor = thick stroke, fast = thin
       // speed in px/ms: ~0.05 slow, ~0.4 medium, ~2+ fast
-      const w=5+26/(1+b.speed*4);
+      const w=7.5+39/(1+b.speed*4);
 
       const [r,g,bv]=b.color;
       ctx.beginPath();
@@ -1092,12 +1092,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(<App />);
       ctx.lineWidth=w;
       ctx.lineCap='round';
       ctx.lineJoin='round';
-      // Soft glow matching stroke color
-      ctx.shadowColor=`rgba(${r},${g},${bv},0.25)`;
-      ctx.shadowBlur=w*2.5;
       ctx.stroke();
     }
-    ctx.shadowBlur=0;
   }
   requestAnimationFrame(render);
 })();
