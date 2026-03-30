@@ -1071,12 +1071,12 @@ ReactDOM.createRoot(document.getElementById('root')).render(<App />);
     for(let i=1;i<trail.length;i++){
       const a=trail[i-1], b=trail[i];
       const age=(now-b.t)/MAX_AGE;          // 0=fresh → 1=gone
-      const alpha=Math.max(0,1-age)*0.85;
+      const alpha=Math.max(0,1-age)*0.5;
       if(alpha<0.01) continue;
 
-      // Calligraphy: slow cursor = thick stroke, fast = thin
+      // Paintbrush: slow cursor = thick stroke, fast = thin
       // speed in px/ms: ~0.05 slow, ~0.4 medium, ~2+ fast
-      const w=1.5+12/(1+b.speed*5);
+      const w=5+26/(1+b.speed*4);
 
       const [r,g,bv]=b.color;
       ctx.beginPath();
@@ -1093,8 +1093,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(<App />);
       ctx.lineCap='round';
       ctx.lineJoin='round';
       // Soft glow matching stroke color
-      ctx.shadowColor=`rgba(${r},${g},${bv},0.35)`;
-      ctx.shadowBlur=w*1.8;
+      ctx.shadowColor=`rgba(${r},${g},${bv},0.25)`;
+      ctx.shadowBlur=w*2.5;
       ctx.stroke();
     }
     ctx.shadowBlur=0;
