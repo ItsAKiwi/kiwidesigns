@@ -1,0 +1,114 @@
+===========================================================
+  INDEX-2.HTML — ALL PAGE TEXT CONTENT
+  KiwiDesigns Portfolio — Design is World Building
+===========================================================
+
+--- NAV ---
+KiwiDesigns
+About | Work | View Work
+
+--- HERO ---
+PORTFOLIO — 2024
+
+Architecting Digital Citadels
+
+I build digital experiences that feel like inhabited worlds — systems with lore,
+logic, and lived-in detail that turn users into believers.
+
+[View Work]  [About]
+
+--- EXPERTISE SHRINES ---
+
+Expertise
+
+01  Systems Architecture
+I architect digital products as cohesive ecosystems rather than isolated screens.
+By establishing a consistent "logic" for the interface—grounded in user mental
+models and technical constraints—I build scalable UI systems that transform
+high-density data into intuitive, navigable landscapes.
+
+02  AI-Augmented Product Thinking
+I leverage AI as a strategic partner to accelerate product evolution and solve
+business-critical challenges. From using AI-driven behavioral mapping to identify
+"retention leaks" to integrating AI-powered content into product roadmaps, I
+implement high-impact interventions that drive long-term engagement.
+
+03  Information Architecture (留白)
+I manage information density through the lens of Strategic Restraint. By applying
+the principle of 留白 (Liú Bái), I balance technical precision with intentional
+minimalism to reduce cognitive load—ensuring that the user's expertise and
+"tribal knowledge" remain the primary focus of the experience.
+
+--- AI TOOLS CAROUSEL ---
+Claude  |  Gemini  |  NotebookLM  |  Stitch  |  Lovart  |  Figma Make  |  Krea AI
+
+--- SELECTED WORK ---
+
+Selected Work
+
+-- Project 01: Gamer Community Platform (2024) --
+Designed a community-first experience that reduced churn by 40% through strategic
+information architecture, retention-focused interaction design, and a modular
+onboarding system built around social proof.
+
+Stats:
+  17.7K  Registered Users
+  2.6K   Weekly Active Users
+  11K    Daily Pageviews
+  40%    Churn Reduction
+
+Tags: Business Goal | Retention Loop | Community Design | IA
+[View Case Study ->]
+
+-- Project 02: Newegg.ai (2025) --
+AI Product Design
+
+Designed the UX architecture for Newegg's AI-powered shopping intelligence
+layer — the platform's equivalent of Google AI Mode for PC hardware. An
+intent-aware system that understands component compatibility, budget constraints,
+and user expertise to surface curated build recommendations and translate complex
+hardware decisions into guided, conversational experiences.
+
+Tags: AI UX | Conversational Design | E-commerce | Intent Architecture
+Case Study Coming Soon
+
+-- Project 03: The Digital Aura Engine (2025) --
+Designed a personal identity layer for Gen Z and Gen Alpha that transforms life
+milestones into a gamified "Lore." By shifting the paradigm from static bucket
+lists to dynamic, verifiable progression, the platform establishes a new framework
+for authentic, high-status social sharing and peer-to-peer accountability.
+
+Tags: Product Strategy | Gamification | Gen Z / Alpha UX | React Prototype
+[View Case Study ->]
+
+--- ABOUT ---
+
+About
+
+World Building through Strategic Restraint
+
+I'm a UX designer and systems thinker who builds digital experiences as if they
+were entire worlds — with consistent rules, internal logic, and a sense of
+lived-in depth that earns user trust and drives long-term engagement.
+
+Expertise:   UX Strategy & Systems Design
+Philosophy:  Liú Bái — Strategic Emptiness
+Based:       Global / Remote
+Available:   Q1 2025 — Open to Projects
+
+--- FOOTER ---
+
+KiwiDesigns
+
+Ready to build something remarkable?
+Let's create a Digital Citadel.
+
+[Start a Project]
+
+Work | About | LinkedIn | Dribbble
+
+(c) 2024 KiwiDesigns — All rights reserved
+
+===========================================================
+  END OF CONTENT
+===========================================================

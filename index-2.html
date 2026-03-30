@@ -107,49 +107,130 @@
        - transparent below content (the 5rem bottom inset extension) */
     /* Backdrop handled by absolute div in Hero JSX — covers full section height */
 
-    /* Services */
-    .services-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
+    /* ── Expertise Shrine (Black Myth: Wukong stone altar) ── */
+    .expertise-shrine-section {
+      position: relative;
+      background: #050608;
+      padding: 6rem 0 8rem;
+      overflow: hidden;
     }
-    .service-card {
-      padding: 2.8rem 2.4rem;
+    /* Film grain overlay */
+    .expertise-grain {
+      position: absolute;
+      inset: 0;
+      opacity: 0.09;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 180px;
+      pointer-events: none;
+      z-index: 0;
     }
-    .service-num {
+    /* Central glowing spine */
+    .expertise-spine {
+      position: absolute;
+      left: 50%;
+      top: 0; bottom: 0;
+      width: 1px;
+      background: #3FB1FF;
+      box-shadow: 0 0 8px rgba(63,177,255,0.7), 0 0 24px rgba(63,177,255,0.25);
+      transform: translateX(-50%);
+      z-index: 1;
+      transition: box-shadow 0.6s;
+    }
+    .expertise-spine.spine-active {
+      box-shadow: 0 0 18px #3FB1FF, 0 0 55px rgba(63,177,255,0.55);
+    }
+    /* Liú Bái ghost watermark */
+    .liu-bai-watermark {
+      position: absolute;
+      left: 1.5rem;
+      top: 50%;
+      transform: translateY(-50%) rotate(180deg);
+      writing-mode: vertical-rl;
       font-family: 'Noto Serif SC', serif;
-      font-size: 0.62rem;
-      color: rgba(232,184,42,0.45);
-      letter-spacing: 0.22em;
-      display: block;
-      margin-bottom: 1.4rem;
+      font-size: 5rem;
+      color: #fff;
+      opacity: 0.02;
+      pointer-events: none;
+      z-index: 0;
+      letter-spacing: 0.3em;
+      user-select: none;
     }
-    .service-name {
-      font-size: 1.2rem;
-      font-weight: 600;
-      color: rgba(255,255,255,0.88);
-      letter-spacing: -0.03em;
-      line-height: 1.2;
-      margin-bottom: 0.9rem;
+    /* Shrine title row */
+    .expertise-title-block {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 4rem 0 2.5rem;
     }
-    .service-desc {
-      font-size: 0.875rem;
-      color: rgba(255,255,255,0.44);
-      line-height: 1.75;
-      margin: 0;
+    /* Shrine list */
+    .expertise-shrines {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-    .service-lnk {
+    /* Individual shrine */
+    .expertise-shrine {
+      position: relative;
+      width: 100%;
+      max-width: 680px;
+      text-align: center;
+      padding: 4rem 4rem;
+    }
+    /* Stone-carved seal number */
+    .expertise-seal {
       display: inline-flex;
       align-items: center;
-      gap: 0.35rem;
-      margin-top: 1.4rem;
-      font-size: 0.67rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: rgba(63,177,255,0.55);
-      text-decoration: none;
-      transition: color 0.3s;
+      justify-content: center;
+      width: 2.4rem;
+      height: 2.4rem;
+      border: 1px solid rgba(100,116,139,0.32);
+      font-size: 0.58rem;
+      letter-spacing: 0.3em;
+      color: rgba(100,116,139,0.6);
+      margin-bottom: 1.8rem;
+      font-family: 'DM Sans', sans-serif;
     }
-    .service-lnk:hover { color: rgba(63,177,255,1); }
+    /* Etched header */
+    .expertise-shrine-title {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 1.875rem;
+      font-weight: 700;
+      color: #fff;
+      text-shadow: 0 0 28px rgba(255,255,255,0.22), 0 0 55px rgba(63,177,255,0.07);
+      margin-bottom: 1.4rem;
+      letter-spacing: -0.01em;
+      line-height: 1.25;
+    }
+    /* Grounded description */
+    .expertise-shrine-desc {
+      max-width: 52ch;
+      margin: 0 auto;
+      font-size: 0.875rem;
+      line-height: 1.8;
+      color: rgba(255,255,255,0.5);
+      text-align: center;
+    }
+    /* Spirit needles — flanking vertical glowing lines */
+    .spirit-needle {
+      position: absolute;
+      top: 2.5rem;
+      bottom: 2.5rem;
+      width: 1px;
+      background: linear-gradient(to bottom,
+        transparent,
+        rgba(63,177,255,0.32) 30%,
+        rgba(63,177,255,0.32) 70%,
+        transparent);
+      animation: spiritPulse 3s ease-in-out infinite;
+    }
+    .spirit-needle-l { left: 0; }
+    .spirit-needle-r { right: 0; animation-delay: 1.5s; }
+    @keyframes spiritPulse {
+      0%, 100% { opacity: 0.2; }
+      50%       { opacity: 0.75; }
+    }
 
     /* AI Tools strip — no separator lines */
     .tools-strip {
@@ -278,34 +359,6 @@
         0 -2px 10px rgba(0,0,0,0.85),
         inset 0 -1px 0 rgba(232,184,42,0.1),
         0 0 14px rgba(232,184,42,0.05);
-    }
-    /* Expertise cards — same glass as scroll-card but no Chinese scroll rods */
-    .expertise-card {
-      position: relative;
-      overflow: hidden;
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      background:
-        radial-gradient(ellipse 90% 55% at 50% 35%, rgba(63,177,255,0.04) 0%, transparent 65%),
-        radial-gradient(ellipse 70% 40% at 50% 88%, rgba(232,184,42,0.03) 0%, transparent 55%),
-        linear-gradient(180deg,
-          rgba(6,8,16,0.55) 0%, rgba(10,14,24,0.45) 25%,
-          rgba(12,16,28,0.5) 50%, rgba(10,14,24,0.45) 75%,
-          rgba(6,8,16,0.55) 100%);
-      border: 1px solid rgba(232,184,42,0.1);
-      border-radius: 4px;
-      padding: 2.6rem 2.4rem 2.8rem;
-      margin: 0.5rem;
-      box-shadow:
-        inset 0 1px 0 rgba(232,184,42,0.08),
-        inset 0 -1px 0 rgba(63,177,255,0.04),
-        0 0 40px rgba(0,0,0,0.3);
-      transition: border-color 0.35s;
-    }
-    .expertise-card:hover { border-color: rgba(232,184,42,0.22); }
-    .expertise-card.shine-active .shine-overlay {
-      opacity: 1;
-      animation: shinySlide2 1.5s ease forwards;
     }
 
     /* Logo-only badges — no border, no background */
@@ -682,29 +735,12 @@ function ShineCard({ children }) {
   );
 }
 
-/* ---- Expertise Card — plain glass, no rods ------------------- */
-function ExpertiseCard({ children }) {
-  const runningRef = React.useRef(false);
-  const [shining, setShining] = React.useState(false);
-  const handleEnter = () => {
-    if (runningRef.current) return;
-    runningRef.current = true;
-    setShining(true);
-    setTimeout(() => { setShining(false); runningRef.current = false; }, 1500);
-  };
-  return (
-    <div className={`expertise-card${shining ? ' shine-active' : ''}`} onMouseEnter={handleEnter}>
-      <div className="shine-overlay" />
-      {children}
-    </div>
-  );
-}
 
-/* ---- Services ------------------------------------------------ */
+/* ---- Expertise Shrines (Black Myth: Wukong altar) ------------ */
 const SERVICES = [
   {
     num: '01',
-    title: 'Systems Thinking & World Building',
+    title: 'Systems Architecture',
     desc: 'I architect digital products as cohesive ecosystems rather than isolated screens. By establishing a consistent "logic" for the interface—grounded in user mental models and technical constraints—I build scalable UI systems that transform high-density data into intuitive, navigable landscapes.',
   },
   {
@@ -720,26 +756,48 @@ const SERVICES = [
 ];
 
 function ServicesGrid() {
+  const spineRef = React.useRef(null);
+
+  React.useEffect(() => {
+    const spine = spineRef.current;
+    if (!spine) return;
+    const shrines = document.querySelectorAll('.expertise-shrine');
+    const obs = new IntersectionObserver(entries => {
+      if (entries.some(e => e.isIntersecting)) spine.classList.add('spine-active');
+      else spine.classList.remove('spine-active');
+    }, { threshold: 0.25 });
+    shrines.forEach(s => obs.observe(s));
+    return () => obs.disconnect();
+  }, []);
+
   return (
-    <section style={{ borderTop: '1px solid rgba(255,255,255,0.06)', position: 'relative', zIndex: 1, paddingBottom: '6.25rem' }}>
-      <div className="grid grid-cols-12 px-6">
-        <div className="col-start-2 col-span-10">
-          <MistReveal>
-            <div style={{ paddingTop: '2.5rem', paddingBottom: '2rem', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-              <span className="eyebrow">Expertise</span>
+    <section className="expertise-shrine-section">
+      <div className="expertise-grain" aria-hidden="true" />
+      <div className="expertise-spine" ref={spineRef} aria-hidden="true" />
+      <div className="liu-bai-watermark" aria-hidden="true">留白</div>
+
+      {/* Section title */}
+      <div className="expertise-title-block">
+        <MistReveal>
+          <h2 className="font-bold text-white" style={{ fontSize: 'clamp(1.5rem,3vw,2.2rem)', letterSpacing: '-0.04em', lineHeight: '1.15' }}>
+            Expertise
+          </h2>
+        </MistReveal>
+      </div>
+
+      {/* Three shrines */}
+      <div className="expertise-shrines">
+        {SERVICES.map((s, i) => (
+          <MistReveal key={s.num} delay={i * 120}>
+            <div className="expertise-shrine">
+              <div className="spirit-needle spirit-needle-l" aria-hidden="true" />
+              <div className="spirit-needle spirit-needle-r" aria-hidden="true" />
+              <div className="expertise-seal tracking-widest">{s.num}</div>
+              <h3 className="expertise-shrine-title">{s.title}</h3>
+              <p className="expertise-shrine-desc">{s.desc}</p>
             </div>
           </MistReveal>
-          <div className="services-grid" style={{ gap: '2rem', paddingTop: '2rem' }}>
-            {SERVICES.map((s, i) => (
-              <MistReveal key={s.num} delay={i * 90}>
-                <ExpertiseCard>
-                  <div className="service-name">{s.title}</div>
-                  <p className="service-desc">{s.desc}</p>
-                </ExpertiseCard>
-              </MistReveal>
-            ))}
-          </div>
-        </div>
+        ))}
       </div>
     </section>
   );
@@ -781,12 +839,10 @@ function SelectedWork() {
         <div className="col-start-2 col-span-10">
 
           <MistReveal>
-            <div style={{ paddingTop: '5rem', marginBottom: '1rem', display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '2.5rem' }}>
+            <div style={{ paddingTop: '5rem', marginBottom: '1rem', display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', paddingBottom: '2.5rem' }}>
               <div>
-                <WukongDivider />
-                <span className="eyebrow" style={{ display: 'block', marginTop: '1.4rem', marginBottom: '0.6rem' }}>Selected Work</span>
                 <h2 className="font-bold text-white" style={{ fontSize: 'clamp(1.5rem, 3vw, 2.2rem)', letterSpacing: '-0.04em', lineHeight: '1.15' }}>
-                  Case Studies & Projects
+                  Selected Work
                 </h2>
               </div>
               <span className="font-noto" style={{ fontSize: '1.1rem', color: 'rgba(232,184,42,0.18)', paddingBottom: '0.3rem' }}>留白</span>
@@ -795,18 +851,17 @@ function SelectedWork() {
 
           {/* ── Project 01: Gamer Community ───────────────────── */}
           <MistReveal delay={80}>
-            <div className="work-card">
+            <div className="work-card" style={{ borderTop: 'none' }}>
               <div className="work-card-grid">
 
                 {/* Image */}
                 <div className="work-img-box">
-                  <img src="images/GC-header-frame2.png" alt="Gamer Community Platform" />
+                  <img src="images/Gamer-Community-Preview.png" alt="Gamer Community Platform" />
                 </div>
 
                 {/* Content */}
                 <div>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.9rem' }}>
-                    <span className="label-cyan">UX Strategy</span>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginBottom: '0.9rem' }}>
                     <span style={{ fontSize: '0.63rem', color: 'rgba(255,255,255,0.38)', letterSpacing: '0.1em' }}>2024</span>
                   </div>
 
@@ -896,6 +951,48 @@ function SelectedWork() {
                     <span style={{ width: '4px', height: '4px', borderRadius: '50%', background: 'rgba(255,255,255,0.2)', display: 'inline-block' }} />
                     Case Study Coming Soon
                   </span>
+                </div>
+
+              </div>
+            </div>
+          </MistReveal>
+
+          {/* ── Project 03: Digital Aura Engine ──────────────── */}
+          <MistReveal delay={120}>
+            <div className="work-card">
+              <div className="work-card-grid">
+
+                {/* Placeholder visual */}
+                <div className="work-img-box">
+                  <div className="work-img-placeholder">
+                    <div style={{ position: 'relative', zIndex: 1, textAlign: 'center' }}>
+                      <div className="font-noto" style={{ fontSize: '2.8rem', color: 'rgba(232,184,42,0.22)', lineHeight: 1, marginBottom: '0.6rem', letterSpacing: '0.1em' }}>氣</div>
+                      <div style={{ fontSize: '0.58rem', letterSpacing: '0.4em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.18)' }}>Digital Aura Engine</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginBottom: '0.9rem' }}>
+                    <span style={{ fontSize: '0.63rem', color: 'rgba(255,255,255,0.38)', letterSpacing: '0.1em' }}>2025</span>
+                  </div>
+
+                  <h3 className="work-title">The Digital Aura Engine</h3>
+
+                  <p className="work-desc">
+                    Designed a personal identity layer for Gen Z and Gen Alpha that transforms life milestones into a gamified "Lore." By shifting the paradigm from static bucket lists to dynamic, verifiable progression, the platform establishes a new framework for authentic, high-status social sharing and peer-to-peer accountability.
+                  </p>
+
+                  <div className="flex flex-wrap gap-2 mb-5">
+                    {['Product Strategy', 'Gamification', 'Gen Z / Alpha UX', 'React Prototype'].map(tag => (
+                      <span key={tag} className="tag-pill">{tag}</span>
+                    ))}
+                  </div>
+
+                  <a href="#" className="work-lnk">
+                    View Case Study <span>&#8594;</span>
+                  </a>
                 </div>
 
               </div>
@@ -1036,11 +1133,11 @@ ReactDOM.createRoot(document.getElementById('root')).render(<App />);
   syncSize();
   window.addEventListener('resize',syncSize);
 
-  // Dark navy ink — darker-toned strokes on the dark background
-  const PALETTE=[[18,32,100],[12,22,80],[22,38,115]];
+  // Dark cyan-family ink — same palette as site accent (#3FB1FF family)
+  const PALETTE=[[4,30,58],[6,38,68],[5,34,63]];
   let palIdx=0, currentColor=PALETTE[0], idleTimer=null;
 
-  const MAX_AGE=700; // ms trail lifetime
+  const MAX_AGE=350; // ms trail lifetime
   const trail=[];   // {x,y,t,speed,color}
   let lx=0,ly=0,lt=0;
 
