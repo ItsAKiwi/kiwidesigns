@@ -107,11 +107,11 @@
        - transparent below content (the 5rem bottom inset extension) */
     /* Backdrop handled by absolute div in Hero JSX — covers full section height */
 
-    /* ── Expertise Shrine (Black Myth: Wukong stone altar) ── */
+    /* ── Expertise Section ── */
     .expertise-shrine-section {
       position: relative;
-      background: #050608;
-      padding: 6rem 0 8rem;
+      background: #0A0C10;
+      padding: 6rem 0 0;
       overflow: hidden;
     }
     /* Film grain overlay */
@@ -124,60 +124,65 @@
       pointer-events: none;
       z-index: 0;
     }
-    /* Central glowing spine */
-    .expertise-spine {
+    /* 留白 horizontal background pattern — right side */
+    .liu-bai-pattern {
       position: absolute;
-      left: 50%;
-      top: 0; bottom: 0;
-      width: 1px;
-      background: #3FB1FF;
-      box-shadow: 0 0 8px rgba(63,177,255,0.7), 0 0 24px rgba(63,177,255,0.25);
-      transform: translateX(-50%);
-      z-index: 1;
-      transition: box-shadow 0.6s;
-    }
-    .expertise-spine.spine-active {
-      box-shadow: 0 0 18px #3FB1FF, 0 0 55px rgba(63,177,255,0.55);
-    }
-    /* Liú Bái ghost watermark */
-    .liu-bai-watermark {
-      position: absolute;
-      left: 1.5rem;
+      right: 3rem;
       top: 50%;
-      transform: translateY(-50%) rotate(180deg);
-      writing-mode: vertical-rl;
+      transform: translateY(-50%);
       font-family: 'Noto Serif SC', serif;
-      font-size: 5rem;
+      font-size: 7rem;
       color: #fff;
-      opacity: 0.02;
+      opacity: 0.15;
       pointer-events: none;
-      z-index: 0;
-      letter-spacing: 0.3em;
+      z-index: 1;
+      letter-spacing: 0.5em;
       user-select: none;
+      white-space: nowrap;
+      line-height: 1.6;
+    }
+    /* Mountain image — bottom-right, clipped to section */
+    .expertise-mountain {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 46%;
+      pointer-events: none;
+      z-index: 1;
+      -webkit-mask-image: linear-gradient(to top, black 0%, black 40%, rgba(0,0,0,0.5) 65%, transparent 100%),
+                          linear-gradient(to right, transparent 0%, black 25%);
+      mask-image: linear-gradient(to top, black 0%, black 40%, rgba(0,0,0,0.5) 65%, transparent 100%),
+                  linear-gradient(to right, transparent 0%, black 25%);
+      -webkit-mask-composite: source-in;
+      mask-composite: intersect;
+      opacity: 0.38;
     }
     /* Shrine title row */
     .expertise-title-block {
       position: relative;
       z-index: 2;
       text-align: center;
-      padding: 4rem 0 2.5rem;
+      padding: 0 0 3rem;
     }
-    /* Shrine list */
+    /* Three shrines in a row */
     .expertise-shrines {
       position: relative;
       z-index: 2;
       display: flex;
-      flex-direction: column;
-      align-items: center;
+      flex-direction: row;
+      align-items: flex-start;
+      padding: 0 4rem 6rem;
+      gap: 0;
     }
-    /* Individual shrine */
+    /* Individual shrine — equal thirds, left-aligned */
     .expertise-shrine {
       position: relative;
-      width: 100%;
-      max-width: 680px;
-      text-align: center;
-      padding: 4rem 4rem;
+      flex: 1;
+      text-align: left;
+      padding: 2.5rem 3rem;
+      border-left: 1px solid rgba(255,255,255,0.06);
     }
+    .expertise-shrine:first-child { border-left: none; }
     /* Stone-carved seal number */
     .expertise-seal {
       display: inline-flex;
@@ -195,41 +200,27 @@
     /* Etched header */
     .expertise-shrine-title {
       font-family: 'Noto Serif SC', serif;
-      font-size: 1.875rem;
+      font-size: 1.3rem;
       font-weight: 700;
       color: #fff;
       text-shadow: 0 0 28px rgba(255,255,255,0.22), 0 0 55px rgba(63,177,255,0.07);
-      margin-bottom: 1.4rem;
+      margin-bottom: 1.2rem;
       letter-spacing: -0.01em;
-      line-height: 1.25;
+      line-height: 1.3;
     }
-    /* Grounded description */
+    /* Description */
     .expertise-shrine-desc {
-      max-width: 52ch;
-      margin: 0 auto;
       font-size: 0.875rem;
       line-height: 1.8;
-      color: rgba(255,255,255,0.5);
-      text-align: center;
+      color: rgba(255,255,255,0.45);
+      text-align: left;
     }
-    /* Spirit needles — flanking vertical glowing lines */
-    .spirit-needle {
-      position: absolute;
-      top: 2.5rem;
-      bottom: 2.5rem;
-      width: 1px;
-      background: linear-gradient(to bottom,
-        transparent,
-        rgba(63,177,255,0.32) 30%,
-        rgba(63,177,255,0.32) 70%,
-        transparent);
-      animation: spiritPulse 3s ease-in-out infinite;
-    }
-    .spirit-needle-l { left: 0; }
-    .spirit-needle-r { right: 0; animation-delay: 1.5s; }
-    @keyframes spiritPulse {
-      0%, 100% { opacity: 0.2; }
-      50%       { opacity: 0.75; }
+    @media (max-width: 900px) {
+      .expertise-shrines { flex-direction: column; padding: 0 1.5rem 4rem; }
+      .expertise-shrine { border-left: none; border-top: 1px solid rgba(255,255,255,0.06); }
+      .expertise-shrine:first-child { border-top: none; }
+      .liu-bai-pattern { font-size: 4rem; right: 1rem; }
+      .expertise-mountain { width: 80%; }
     }
 
     /* AI Tools strip — no separator lines */
@@ -756,42 +747,39 @@ const SERVICES = [
 ];
 
 function ServicesGrid() {
-  const spineRef = React.useRef(null);
-
-  React.useEffect(() => {
-    const spine = spineRef.current;
-    if (!spine) return;
-    const shrines = document.querySelectorAll('.expertise-shrine');
-    const obs = new IntersectionObserver(entries => {
-      if (entries.some(e => e.isIntersecting)) spine.classList.add('spine-active');
-      else spine.classList.remove('spine-active');
-    }, { threshold: 0.25 });
-    shrines.forEach(s => obs.observe(s));
-    return () => obs.disconnect();
-  }, []);
-
   return (
     <section className="expertise-shrine-section">
       <div className="expertise-grain" aria-hidden="true" />
-      <div className="expertise-spine" ref={spineRef} aria-hidden="true" />
-      <div className="liu-bai-watermark" aria-hidden="true">留白</div>
+
+      {/* 留白 horizontal background pattern — right side */}
+      <div className="liu-bai-pattern" aria-hidden="true">
+        留白&nbsp;&nbsp;留白<br/>
+        留白&nbsp;&nbsp;留白<br/>
+        留白&nbsp;&nbsp;留白
+      </div>
+
+      {/* Mountain image — bottom-right, clipped into section */}
+      <img
+        className="expertise-mountain"
+        src="images/Mountain Silhouette.png"
+        alt=""
+        aria-hidden="true"
+      />
 
       {/* Section title */}
       <div className="expertise-title-block">
         <MistReveal>
-          <h2 className="font-bold text-white" style={{ fontSize: 'clamp(1.5rem,3vw,2.2rem)', letterSpacing: '-0.04em', lineHeight: '1.15' }}>
+          <h2 className="font-bold text-white" style={{ fontSize: 'clamp(1.5rem,3vw,2.2rem)', letterSpacing: '-0.04em', lineHeight: '1.15', textAlign: 'center' }}>
             Expertise
           </h2>
         </MistReveal>
       </div>
 
-      {/* Three shrines */}
+      {/* Three shrines in a row */}
       <div className="expertise-shrines">
         {SERVICES.map((s, i) => (
           <MistReveal key={s.num} delay={i * 120}>
             <div className="expertise-shrine">
-              <div className="spirit-needle spirit-needle-l" aria-hidden="true" />
-              <div className="spirit-needle spirit-needle-r" aria-hidden="true" />
               <div className="expertise-seal tracking-widest">{s.num}</div>
               <h3 className="expertise-shrine-title">{s.title}</h3>
               <p className="expertise-shrine-desc">{s.desc}</p>
@@ -1236,21 +1224,32 @@ ReactDOM.createRoot(document.getElementById('root')).render(<App />);
       gl_FragColor = vec4(next, 0., 0., 1.);
     }`;
 
-  /* Render: compute surface gradient → cyan-tinted glow on transparent bg */
+  /* Render: dark glass body + thin light-fracture highlights at wave crests */
   const RENDER_FS = `
     precision highp float;
     uniform sampler2D uWave;
     uniform vec2 texel;
     varying vec2 v;
     void main(){
-      float l = texture2D(uWave, v - vec2(texel.x, 0.)).r;
-      float r = texture2D(uWave, v + vec2(texel.x, 0.)).r;
-      float u = texture2D(uWave, v + vec2(0., texel.y)).r;
-      float d = texture2D(uWave, v - vec2(0., texel.y)).r;
-      float edge = length(vec2(r - l, u - d)) * 6.;
-      float glow = clamp(edge, 0., 1.);
-      /* Site accent #3FB1FF = 0.247, 0.694, 1.0 */
-      gl_FragColor = vec4(0.247, 0.694, 1.0, glow * 0.38);
+      float c  = texture2D(uWave, v).r;
+      float l  = texture2D(uWave, v - vec2(texel.x, 0.)).r;
+      float r  = texture2D(uWave, v + vec2(texel.x, 0.)).r;
+      float u  = texture2D(uWave, v + vec2(0., texel.y)).r;
+      float d  = texture2D(uWave, v - vec2(0., texel.y)).r;
+      /* Gradient magnitude — drives edge brightness */
+      vec2  grad = vec2(r - l, u - d);
+      float edge = length(grad) * 9.0;
+      /* Second-derivative laplacian — drives fracture shimmer at wave crests */
+      float lap  = abs(l + r + u + d - 4.0 * c) * 28.0;
+      float frac = clamp(lap, 0.0, 1.0);
+      /* Dark glass body: colour darker than #0A0C10 bg */
+      float body = clamp(abs(c) * 14.0, 0.0, 1.0);
+      /* Blend dark ink base + thin bright fracture highlights */
+      vec3 darkGlass  = vec3(0.012, 0.016, 0.028);   /* near-black navy */
+      vec3 fracLight  = vec3(0.55, 0.80, 1.0);        /* icy refraction line */
+      vec3 col = mix(darkGlass, fracLight, frac * 0.72);
+      float alpha = clamp(edge * 0.55 + body * 0.18, 0.0, 0.72);
+      gl_FragColor = vec4(col, alpha);
     }`;
 
   /* ── GL helpers ── */
