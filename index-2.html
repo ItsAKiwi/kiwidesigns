@@ -1196,14 +1196,151 @@ ReactDOM.createRoot(document.getElementById('root')).render(<App />);
 })();
 </script>
 
-<!-- UnicornStudio cursor effect — deferred until after React renders -->
-<div id="unicorn-overlay" data-us-project="fx3yKTDxvAFMzaOXSiO0" style="position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:9999;overflow:hidden;"></div>
-<script type="text/javascript">
-  window.addEventListener('load', function() {
-    setTimeout(function() {
-      !function(){var u=window.UnicornStudio;if(u&&u.init){u.init()}else{window.UnicornStudio={isInitialized:!1};var i=document.createElement("script");i.src="https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v2.1.5/dist/unicornStudio.umd.js";i.onload=function(){UnicornStudio.init()};(document.head||document.body).appendChild(i)}}();
-    }, 500);
-  });
+<script>
+/* ── WebGL Water Surface Disturbance ── */
+(function(){
+  'use strict';
+  const canvas = document.getElementById('fluid-canvas');
+  const gl = canvas.getContext('webgl', { alpha: true, premultipliedAlpha: false });
+  if (!gl) return;
+
+  /* Simulation resolution — lower = faster, still looks smooth */
+  const SIM = 256;
+
+  /* ── Shaders ── */
+  const VS = `
+    attribute vec2 a;
+    varying vec2 v;
+    void main(){ v = a * 0.5 + 0.5; gl_Position = vec4(a, 0., 1.); }`;
+
+  /* Wave propagation: 2D finite-difference wave equation with damping */
+  const WAVE_FS = `
+    precision highp float;
+    uniform sampler2D uPrev, uCurr;
+    uniform vec2 texel, mouse;
+    uniform float addEnergy;
+    varying vec2 v;
+    void main(){
+      float c = texture2D(uCurr, v).r;
+      float p = texture2D(uPrev, v).r;
+      float l = texture2D(uCurr, v - vec2(texel.x, 0.)).r;
+      float r = texture2D(uCurr, v + vec2(texel.x, 0.)).r;
+      float u = texture2D(uCurr, v + vec2(0., texel.y)).r;
+      float d = texture2D(uCurr, v - vec2(0., texel.y)).r;
+      float next = 2. * c - p + 0.22 * (l + r + u + d - 4. * c);
+      next *= 0.982;
+      if(addEnergy > 0.){
+        float dist = length(v - mouse);
+        next -= exp(-dist * dist * 600.) * 0.55;
+      }
+      gl_FragColor = vec4(next, 0., 0., 1.);
+    }`;
+
+  /* Render: compute surface gradient → cyan-tinted glow on transparent bg */
+  const RENDER_FS = `
+    precision highp float;
+    uniform sampler2D uWave;
+    uniform vec2 texel;
+    varying vec2 v;
+    void main(){
+      float l = texture2D(uWave, v - vec2(texel.x, 0.)).r;
+      float r = texture2D(uWave, v + vec2(texel.x, 0.)).r;
+      float u = texture2D(uWave, v + vec2(0., texel.y)).r;
+      float d = texture2D(uWave, v - vec2(0., texel.y)).r;
+      float edge = length(vec2(r - l, u - d)) * 6.;
+      float glow = clamp(edge, 0., 1.);
+      /* Site accent #3FB1FF = 0.247, 0.694, 1.0 */
+      gl_FragColor = vec4(0.247, 0.694, 1.0, glow * 0.38);
+    }`;
+
+  /* ── GL helpers ── */
+  function mkShader(type, src){
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src); gl.compileShader(s); return s;
+  }
+  function mkProg(fs){
+    const p = gl.createProgram();
+    gl.attachShader(p, mkShader(gl.VERTEX_SHADER, VS));
+    gl.attachShader(p, mkShader(gl.FRAGMENT_SHADER, fs));
+    gl.bindAttribLocation(p, 0, 'a'); gl.linkProgram(p); return p;
+  }
+  function mkFBO(w, h){
+    const tex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, w, h, 0, gl.RGBA, gl.FLOAT, null);
+    const fb = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
+    return { tex, fb };
+  }
+
+  /* Need OES_texture_float for wave heights */
+  if (!gl.getExtension('OES_texture_float')) return;
+  gl.getExtension('OES_texture_float_linear');
+
+  const pWave   = mkProg(WAVE_FS);
+  const pRender = mkProg(RENDER_FS);
+
+  const quad = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, quad);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(0);
+  gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+
+  let prev = mkFBO(SIM, SIM), curr = mkFBO(SIM, SIM), next = mkFBO(SIM, SIM);
+
+  const texel = [1/SIM, 1/SIM];
+  let mouse = [0.5, 0.5], addEnergy = 0;
+
+  function syncSize(){
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  syncSize();
+  window.addEventListener('resize', syncSize);
+
+  document.addEventListener('mousemove', e => {
+    mouse = [e.clientX / window.innerWidth, 1 - e.clientY / window.innerHeight];
+    addEnergy = 1;
+  }, { passive: true });
+
+  function bind(fbo){ gl.bindFramebuffer(gl.FRAMEBUFFER, fbo); gl.viewport(0,0,SIM,SIM); }
+  function draw(){ gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4); }
+
+  function loop(){
+    requestAnimationFrame(loop);
+
+    /* Step wave simulation */
+    gl.disable(gl.BLEND);
+    gl.useProgram(pWave);
+    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, prev.tex); gl.uniform1i(gl.getUniformLocation(pWave,'uPrev'),0);
+    gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, curr.tex); gl.uniform1i(gl.getUniformLocation(pWave,'uCurr'),1);
+    gl.uniform2fv(gl.getUniformLocation(pWave,'texel'), texel);
+    gl.uniform2fv(gl.getUniformLocation(pWave,'mouse'), mouse);
+    gl.uniform1f(gl.getUniformLocation(pWave,'addEnergy'), addEnergy);
+    bind(next.fb); draw();
+    addEnergy = 0;
+
+    /* Rotate buffers */
+    const tmp = prev; prev = curr; curr = next; next = tmp;
+
+    /* Render to screen */
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    gl.useProgram(pRender);
+    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, curr.tex); gl.uniform1i(gl.getUniformLocation(pRender,'uWave'),0);
+    gl.uniform2fv(gl.getUniformLocation(pRender,'texel'), texel);
+    draw();
+  }
+  loop();
+})();
 </script>
 
 </body>
