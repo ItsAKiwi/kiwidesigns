@@ -528,7 +528,7 @@
 <body style="background:#0A0C10;color:#fff;">
 
   <div id="root"></div>
-  <div data-us-project="fx3yKTDxvAFMzaOXSiO0" style="position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:9999;overflow:hidden;"></div>
+  <canvas id="fluid-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;"></canvas>
 
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -1121,7 +1121,80 @@ ReactDOM.createRoot(document.getElementById('root')).render(<App />);
   </script>
 
 
-<script type="text/javascript">!function(){var u=window.UnicornStudio;if(u&&u.init){if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",function(){u.init()})}else{u.init()}}else{window.UnicornStudio={isInitialized:!1};var i=document.createElement("script");i.src="https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v2.1.5/dist/unicornStudio.umd.js",i.onload=function(){if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",function(){UnicornStudio.init()})}else{UnicornStudio.init()}},(document.head||document.body).appendChild(i)}}();</script>
+<script>
+/* ── Calligraphy Brush Cursor Effect ── */
+(function(){
+  'use strict';
+  const canvas = document.getElementById('fluid-canvas');
+  const ctx = canvas.getContext('2d');
+  if(!ctx) return;
+
+  function syncSize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
+  syncSize();
+  window.addEventListener('resize',syncSize);
+
+  // Dark cyan-family ink — same palette as site accent (#3FB1FF family)
+  const PALETTE=[[4,30,58],[6,38,68],[5,34,63]];
+  let palIdx=0, currentColor=PALETTE[0], idleTimer=null;
+
+  const MAX_AGE=350; // ms trail lifetime
+  const trail=[];   // {x,y,t,speed,color}
+  let lx=0,ly=0,lt=0;
+
+  document.addEventListener('mousemove',e=>{
+    const now=performance.now();
+    const dx=e.clientX-lx, dy=e.clientY-ly;
+    const dt=Math.max(now-lt,1);
+    const speed=Math.sqrt(dx*dx+dy*dy)/dt; // px/ms
+    trail.push({x:e.clientX,y:e.clientY,t:now,speed,color:currentColor});
+    lx=e.clientX;ly=e.clientY;lt=now;
+    // Rotate palette color after a brief pause (new stroke)
+    clearTimeout(idleTimer);
+    idleTimer=setTimeout(()=>{
+      palIdx=(palIdx+1)%PALETTE.length;
+      currentColor=PALETTE[palIdx];
+    },280);
+  },{passive:true});
+
+  function render(now){
+    requestAnimationFrame(render);
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    // Drop expired points
+    const cutoff=now-MAX_AGE;
+    while(trail.length>1&&trail[0].t<cutoff) trail.shift();
+    if(trail.length<2) return;
+
+    for(let i=1;i<trail.length;i++){
+      const a=trail[i-1], b=trail[i];
+      const age=(now-b.t)/MAX_AGE;          // 0=fresh → 1=gone
+      const alpha=Math.max(0,1-age)*0.25;
+      if(alpha<0.01) continue;
+
+      // Calligraphy ink: slow cursor = thick stroke, fast = thin
+      // speed in px/ms: ~0.05 slow, ~0.4 medium, ~2+ fast
+      const w=7.5+39/(1+b.speed*4);
+
+      const [r,g,bv]=b.color;
+      ctx.beginPath();
+      ctx.moveTo(a.x,a.y);
+      // Smooth through midpoint to next point if available
+      if(i<trail.length-1){
+        const c=trail[i+1];
+        ctx.quadraticCurveTo(b.x,b.y,(b.x+c.x)/2,(b.y+c.y)/2);
+      } else {
+        ctx.lineTo(b.x,b.y);
+      }
+      ctx.strokeStyle=`rgba(${r},${g},${bv},${alpha})`;
+      ctx.lineWidth=w;
+      ctx.lineCap='round';
+      ctx.lineJoin='round';
+      ctx.stroke();
+    }
+  }
+  requestAnimationFrame(render);
+})();
+</script>
 
 </body>
 </html>
