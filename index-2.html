@@ -1196,5 +1196,15 @@ ReactDOM.createRoot(document.getElementById('root')).render(<App />);
 })();
 </script>
 
+<!-- UnicornStudio cursor effect — deferred until after React renders -->
+<div id="unicorn-overlay" data-us-project="fx3yKTDxvAFMzaOXSiO0" style="position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:9999;overflow:hidden;"></div>
+<script type="text/javascript">
+  window.addEventListener('load', function() {
+    setTimeout(function() {
+      !function(){var u=window.UnicornStudio;if(u&&u.init){u.init()}else{window.UnicornStudio={isInitialized:!1};var i=document.createElement("script");i.src="https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v2.1.5/dist/unicornStudio.umd.js";i.onload=function(){UnicornStudio.init()};(document.head||document.body).appendChild(i)}}();
+    }, 500);
+  });
+</script>
+
 </body>
 </html>
