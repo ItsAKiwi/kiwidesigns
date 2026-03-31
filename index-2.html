@@ -114,16 +114,6 @@
       padding: 6rem 0 0;
       overflow: hidden;
     }
-    /* Film grain overlay */
-    .expertise-grain {
-      position: absolute;
-      inset: 0;
-      opacity: 0.09;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-      background-size: 180px;
-      pointer-events: none;
-      z-index: 0;
-    }
     /* 留白 single bold watermark — upper right */
     .liu-bai-pattern {
       position: absolute;
@@ -762,9 +752,6 @@ const SERVICES = [
 function ServicesGrid() {
   return (
     <section className="expertise-shrine-section">
-      <div className="expertise-grain" aria-hidden="true" />
-
-      {/* 留白 horizontal background pattern — right side */}
       {/* 留白 single bold watermark */}
       <div className="liu-bai-pattern" aria-hidden="true">留白</div>
 
