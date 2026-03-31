@@ -124,38 +124,52 @@
       pointer-events: none;
       z-index: 0;
     }
-    /* 留白 horizontal background pattern — right side */
+    /* 留白 single bold watermark — right side */
     .liu-bai-pattern {
       position: absolute;
-      right: 3rem;
+      right: 3.5rem;
       top: 50%;
       transform: translateY(-50%);
       font-family: 'Noto Serif SC', serif;
-      font-size: 7rem;
+      font-size: 9rem;
+      font-weight: 700;
       color: #fff;
       opacity: 0.15;
       pointer-events: none;
       z-index: 1;
-      letter-spacing: 0.5em;
+      letter-spacing: 0.1em;
       user-select: none;
       white-space: nowrap;
-      line-height: 1.6;
     }
-    /* Mountain image — bottom-right, clipped to section */
-    .expertise-mountain {
+    /* Mountain image — bottom-right, only 40% peeking above edge */
+    .expertise-mountain-wrap {
       position: absolute;
       bottom: 0;
       right: 0;
       width: 46%;
+      height: 100%;
       pointer-events: none;
       z-index: 1;
-      -webkit-mask-image: linear-gradient(to top, black 0%, black 40%, rgba(0,0,0,0.5) 65%, transparent 100%),
-                          linear-gradient(to right, transparent 0%, black 25%);
-      mask-image: linear-gradient(to top, black 0%, black 40%, rgba(0,0,0,0.5) 65%, transparent 100%),
-                  linear-gradient(to right, transparent 0%, black 25%);
-      -webkit-mask-composite: source-in;
-      mask-composite: intersect;
-      opacity: 0.38;
+      overflow: hidden;
+    }
+    .expertise-mountain {
+      position: absolute;
+      bottom: -60%;   /* push down so only ~40% shows */
+      right: 0;
+      width: 100%;
+      pointer-events: none;
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, black 22%);
+      mask-image: linear-gradient(to right, transparent 0%, black 22%);
+      opacity: 0.28;
+    }
+    /* Dark overlay on mountain — same tone as hero */
+    .expertise-mountain-wrap::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(10,12,16,0.55) 0%, rgba(10,12,16,0.2) 60%, transparent 100%),
+                  linear-gradient(to right, rgba(10,12,16,0.9) 0%, rgba(10,12,16,0.3) 30%, transparent 60%);
+      pointer-events: none;
     }
     /* Shrine title row */
     .expertise-title-block {
@@ -219,8 +233,8 @@
       .expertise-shrines { flex-direction: column; padding: 0 1.5rem 4rem; }
       .expertise-shrine { border-left: none; border-top: 1px solid rgba(255,255,255,0.06); }
       .expertise-shrine:first-child { border-top: none; }
-      .liu-bai-pattern { font-size: 4rem; right: 1rem; }
-      .expertise-mountain { width: 80%; }
+      .liu-bai-pattern { font-size: 5rem; right: 1rem; }
+      .expertise-mountain-wrap { width: 90%; }
     }
 
     /* AI Tools strip — no separator lines */
@@ -752,19 +766,13 @@ function ServicesGrid() {
       <div className="expertise-grain" aria-hidden="true" />
 
       {/* 留白 horizontal background pattern — right side */}
-      <div className="liu-bai-pattern" aria-hidden="true">
-        留白&nbsp;&nbsp;留白<br/>
-        留白&nbsp;&nbsp;留白<br/>
-        留白&nbsp;&nbsp;留白
-      </div>
+      {/* 留白 single bold watermark */}
+      <div className="liu-bai-pattern" aria-hidden="true">留白</div>
 
-      {/* Mountain image — bottom-right, clipped into section */}
-      <img
-        className="expertise-mountain"
-        src="images/Mountain Silhouette.png"
-        alt=""
-        aria-hidden="true"
-      />
+      {/* Mountain image — bottom-right, only 40% visible above edge */}
+      <div className="expertise-mountain-wrap" aria-hidden="true">
+        <img className="expertise-mountain" src="images/Mountain Silhouette.png" alt="" />
+      </div>
 
       {/* Section title */}
       <div className="expertise-title-block">
